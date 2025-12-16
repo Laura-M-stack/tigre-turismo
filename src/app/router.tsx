@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createHashRouter } from "react-router-dom";
 
 import ComoLlegar from "../pages/ComoLlegar";
 import Home from "../pages/Home";
@@ -9,7 +9,7 @@ import QueHacer from "../pages/QueHacer";
 
 import AppLayout from "./layout/AppLayout";
 
-export const router = createBrowserRouter([
+export const router = createHashRouter([
   {
     element: <AppLayout />,
     children: [
