@@ -5,6 +5,7 @@ import PlaceMap from "../components/place/PlaceMap";
 import Button from "../components/ui/Button";
 import Tag from "../components/ui/Tag";
 import { places } from "../data/places";
+import { googleMapsDirectionsUrl } from "../lib/maps";
 import { setSEO } from "../lib/seo";
 import { getFavs, toggleFav } from "../lib/storage";
 
@@ -56,7 +57,16 @@ export default function LugarDetalle() {
             ) : null}
           </div>
         </div>
-
+        {typeof place.lat === "number" && typeof place.lng === "number" ? (
+          <a
+            href={googleMapsDirectionsUrl(place.lat, place.lng)}
+            target="_blank"
+            rel="noreferrer"
+            className="text-sm underline text-slate-700"
+          >
+            Abrir en Google Maps
+          </a>
+        ) : null}
         <Button onClick={() => setFavs(toggleFav(place.slug))} aria-pressed={isFav}>
           {isFav ? "Guardado ✓" : "Guardar en itinerario"}
         </Button>

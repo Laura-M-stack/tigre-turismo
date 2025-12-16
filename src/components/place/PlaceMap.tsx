@@ -11,6 +11,7 @@ import {
 import { Link } from "react-router-dom";
 
 import { defaultIcon } from "../../lib/leafletIcon";
+import { googleMapsDirectionsUrl } from "../../lib/maps";
 import type { Place } from "../../types/place";
 
 type Props = {
@@ -86,6 +87,16 @@ export default function PlaceMap({ places, height = 320, showDetailLink = true }
                 <Link to={`/lugares/${place.slug}`} className="text-sm underline">
                   Ver detalle
                 </Link>
+              ) : null}
+              {typeof place.lat === "number" && typeof place.lng === "number" ? (
+                <a
+                  href={googleMapsDirectionsUrl(place.lat, place.lng)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="text-sm underline"
+                >
+                  Cómo llegar
+                </a>
               ) : null}
             </div>
           );
