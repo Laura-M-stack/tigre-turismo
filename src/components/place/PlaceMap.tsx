@@ -1,6 +1,14 @@
-import { useEffect, useMemo } from "react";
-import { MapContainer, Marker, TileLayer, useMap } from "react-leaflet";
 import L from "leaflet";
+import { useEffect, useMemo } from "react";
+import {
+  MapContainer,
+  Marker,
+  Popup,
+  TileLayer,
+  useMap,
+  CircleMarker,
+} from "react-leaflet";
+import { Link } from "react-router-dom";
 
 import { defaultIcon } from "../../lib/leafletIcon";
 import type { Place } from "../../types/place";
@@ -8,6 +16,7 @@ import type { Place } from "../../types/place";
 type Props = {
   places: Place[];
   height?: number;
+  showDetailLink?: boolean;
 };
 
 function FitBounds({ bounds }: { bounds: L.LatLngBounds }) {
@@ -20,7 +29,7 @@ function FitBounds({ bounds }: { bounds: L.LatLngBounds }) {
   return null;
 }
 
-export default function PlaceMap({ places, height = 320 }: Props) {
+export default function PlaceMap({ places, height = 320, showDetailLink = true }: Props) {
   const withCoords = useMemo(
     () => places.filter((p) => typeof p.lat === "number" && typeof p.lng === "number"),
     [places],
@@ -57,13 +66,44 @@ export default function PlaceMap({ places, height = 320 }: Props) {
 
         <FitBounds bounds={bounds} />
 
-        {withCoords.map((place) => (
-          <Marker
-            key={place.slug}
-            position={[place.lat!, place.lng!]}
-            icon={defaultIcon}
-          />
-        ))}
+        {withCoords.map((place) => {
+          const pos: [number, number] = [place.lat!, place.lng!];
+          const isArea = place.locationType === "area";
+
+          const popupContent = (
+            <div className="space-y-1">
+              <div className="font-semibold">{place.name}</div>
+
+              {place.locationType ? (
+                <div className="text-xs text-slate-600">
+                  {place.locationType === "entrance"
+                    ? "Acceso principal"
+                    : "Zona aproximada"}
+                </div>
+              ) : null}
+
+              {showDetailLink ? (
+                <Link to={`/lugares/${place.slug}`} className="text-sm underline">
+                  Ver detalle
+                </Link>
+              ) : null}
+            </div>
+          );
+
+          if (isArea) {
+            return (
+              <CircleMarker key={place.slug} center={pos} radius={12} pathOptions={{}}>
+                <Popup>{popupContent}</Popup>
+              </CircleMarker>
+            );
+          }
+
+          return (
+            <Marker key={place.slug} position={pos} icon={defaultIcon}>
+              <Popup>{popupContent}</Popup>
+            </Marker>
+          );
+        })}
       </MapContainer>
     </div>
   );
