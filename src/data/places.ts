@@ -12,6 +12,9 @@ export const places: Place[] = [
     budget: "bajo",
     zone: "Puerto de Frutos",
     tags: ["familia", "compras", "paseo"],
+    lat: -34.42006,
+    lng: -58.57343,
+    locationType: "entrance",
   },
   {
     slug: "paseo-en-lancha-por-el-delta",
@@ -24,6 +27,9 @@ export const places: Place[] = [
     budget: "medio",
     zone: "Estación Fluvial",
     tags: ["naturaleza", "fotos", "pareja"],
+    lat: -34.42094,
+    lng: -58.57982,
+    locationType: "area",
   },
   {
     slug: "museo-de-arte-tigre",
@@ -35,5 +41,8 @@ export const places: Place[] = [
     duration: "1-2h",
     budget: "medio",
     tags: ["lluvia", "cultura", "tranquilo"],
+    lat: -34.40924,
+    lng: -58.59171,
+    locationType: "entrance",
   },
 ];
