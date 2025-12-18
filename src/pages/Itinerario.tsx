@@ -35,9 +35,23 @@ export default function Itinerario() {
   }, [order]);
 
   const orderedPlaces = useMemo(() => {
-    const bySlug = new Map(places.map((p) => [p.slug, p]));
-    return order.map((slug) => bySlug.get(slug)).filter(Boolean);
+    const bySlug = new Map(places.map((p) => [p.slug, p] as const));
+
+    return order
+      .map((slug) => bySlug.get(slug))
+      .filter((p): p is (typeof places)[number] => Boolean(p));
   }, [order]);
+
+  useEffect(() => {
+    const valid = new Set(places.map((p) => p.slug));
+    const next = order.filter((s) => valid.has(s));
+    if (next.length !== order.length) {
+      setOrder(next);
+      setItineraryOrder(next);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
 
   const totalMinutes = useMemo(
     () => estimateTotalMinutes(orderedPlaces),
