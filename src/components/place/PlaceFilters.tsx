@@ -24,55 +24,75 @@ export default function PlaceFilters({
 }: Props) {
   return (
     <div className="grid gap-3 md:grid-cols-4">
-      <Input
-        value={q}
-        onChange={(e) => setQ(e.target.value)}
-        placeholder="Buscar (ej: delta, museo...)"
-      />
+      <div className="grid gap-1">
+        <label htmlFor="q" className="text-sm font-medium text-slate-700">
+          Buscar
+        </label>
+        <Input className="bg-white"
+          id="q"
+          value={q}
+          onChange={(e) => setQ(e.target.value)}
+          placeholder="Buscar (ej: delta, museo...)"
+          aria-label="Buscar lugares"
+        />
+      </div>
 
-      <select
-        aria-label="Categoría"
-        className="rounded-xl border px-3 py-2 text-sm"
-        value={category}
-        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-          setCategory(e.target.value as Category | "all")
-        }
-      >
-        <option value="all">Categoría</option>
-        <option value="naturaleza">Naturaleza</option>
-        <option value="paseos">Paseos</option>
-        <option value="museos">Museos</option>
-        <option value="gastronomia">Gastronomía</option>
-      </select>
+      <div className="grid gap-1">
+        <label htmlFor="category" className="text-sm font-medium text-slate-700">
+          Categoría
+        </label>
+        <select
+          id="category"
+          className="rounded-xl border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-300"
+          value={category}
+          onChange={(e) => setCategory(e.target.value as Category | "all")}
+        >
+          <option value="all">Todas</option>
+          <option value="naturaleza">Naturaleza</option>
+          <option value="paseos">Paseos</option>
+          <option value="museos">Museos</option>
+          <option value="gastronomia">Gastronomía</option>
+          <option value="aventura">Aventura</option>
+          <option value="relax">Relax</option>
+          <option value="entretenimiento">Entretenimiento</option>
+          <option value="cultura">Cultura</option>
+        </select>
+      </div>
 
-      <select
-        aria-label="Duración"
-        className="rounded-xl border px-3 py-2 text-sm"
-        value={duration}
-        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-          setDuration(e.target.value as Duration | "all")
-        }
-      >
-        <option value="all">Duración</option>
-        <option value="1-2h">1–2h</option>
-        <option value="medio-dia">Medio día</option>
-        <option value="dia-completo">Día completo</option>
-      </select>
+      <div className="grid gap-1">
+        <label htmlFor="duration" className="text-sm font-medium text-slate-700">
+          Duración
+        </label>
+        <select
+          id="duration"
+          className="rounded-xl border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-300"
+          value={duration}
+          onChange={(e) => setDuration(e.target.value as Duration | "all")}
+        >
+          <option value="all">Todas</option>
+          <option value="1-2h">1–2h</option>
+          <option value="medio-dia">Medio día</option>
+          <option value="dia-completo">Día completo</option>
+        </select>
+      </div>
 
-      <select
-        aria-label="Presupuesto"
-        className="rounded-xl border px-3 py-2 text-sm"
-        value={budget}
-        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-          setBudget(e.target.value as Budget | "all")
-        }
-      >
-        <option value="all">Presupuesto</option>
-        <option value="gratis">Gratis</option>
-        <option value="bajo">Bajo</option>
-        <option value="medio">Medio</option>
-        <option value="alto">Alto</option>
-      </select>
+      <div className="grid gap-1">
+        <label htmlFor="budget" className="text-sm font-medium text-slate-700">
+          Presupuesto
+        </label>
+        <select
+          id="budget"
+          className="rounded-xl border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-300"
+          value={budget}
+          onChange={(e) => setBudget(e.target.value as Budget | "all")}
+        >
+          <option value="all">Todos</option>
+          <option value="gratis">Gratis</option>
+          <option value="bajo">Bajo</option>
+          <option value="medio">Medio</option>
+          <option value="alto">Alto</option>
+        </select>
+      </div>
     </div>
   );
 }

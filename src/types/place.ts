@@ -1,4 +1,4 @@
-export type Category = "naturaleza" | "paseos" | "museos" | "gastronomia";
+export type Category = "naturaleza" | "paseos" | "museos" | "gastronomia" | "aventura" | "relax" | "entretenimiento" | "cultura";
 export type Budget = "gratis" | "bajo" | "medio" | "alto";
 export type Duration = "1-2h" | "medio-dia" | "dia-completo";
 
@@ -20,4 +20,6 @@ export type Place = {
   lat?: number;
   lng?: number;
   locationType?: LocationType;
+  coverImage?: string;
+  gallery?: string[];
 };

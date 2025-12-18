@@ -7,7 +7,11 @@ import Card from "../components/ui/Card";
 import Tag from "../components/ui/Tag";
 import { places } from "../data/places";
 import { estimateTotalMinutes, formatMinutes, planSuggestion } from "../lib/itinerary";
-import { getItineraryOrder, normalizeOrder, setItineraryOrder } from "../lib/itineraryStorage";
+import {
+  getItineraryOrder,
+  normalizeOrder,
+  setItineraryOrder,
+} from "../lib/itineraryStorage";
 import { setSEO } from "../lib/seo";
 import { buildItineraryShareText } from "../lib/share";
 import { getFavs } from "../lib/storage";
@@ -91,6 +95,13 @@ export default function Itinerario() {
     );
   }
 
+  const removeFromItinerary = (slug: string) => {
+    const next = order.filter((s) => s !== slug);
+    setOrder(next);
+    setItineraryOrder(next);
+  };
+
+
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
       <h1 className="text-2xl font-bold tracking-tight">Mi itinerario</h1>
@@ -140,27 +151,35 @@ export default function Itinerario() {
           <div className="mt-4 grid gap-4">
             {orderedPlaces.map((p, i) => (
               <div key={p.slug} className="relative">
-                <div className="absolute right-3 top-3 z-10 flex gap-2">
+                <div className="absolute right-3 top-3 z-10 flex items-center gap-2 rounded-xl bg-white/90 px-2 py-1 shadow-sm backdrop-blur">
                   <Button
                     variant="ghost"
                     onClick={() => move(i, -1)}
                     aria-label="Mover arriba"
-                    title="Mover arriba"
                     disabled={i === 0}
+                    className="h-8 w-8 px-0 text-slate-800 hover:bg-slate-200"
                   >
                     ↑
                   </Button>
+
                   <Button
                     variant="ghost"
                     onClick={() => move(i, 1)}
                     aria-label="Mover abajo"
-                    title="Mover abajo"
                     disabled={i === orderedPlaces.length - 1}
+                    className="h-8 w-8 px-0 text-slate-800 hover:bg-slate-200"
                   >
                     ↓
                   </Button>
-                </div>
 
+                  <Button
+                    onClick={() => removeFromItinerary(p.slug)}
+                    aria-label="Quitar del itinerario"
+                    className="h-8 w-8 px-0 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+                  >
+                    🗑️
+                  </Button>
+                </div>
                 <PlaceCard place={p} />
               </div>
             ))}
@@ -170,7 +189,8 @@ export default function Itinerario() {
             <div className="mt-6 rounded-xl border bg-slate-50 p-6 text-sm text-slate-700">
               <p className="font-medium">Tu itinerario está vacío</p>
               <p className="mt-1">
-                Explorá la sección <strong>Qué hacer</strong> y guardá lugares para armar tu plan.
+                Explorá la sección <strong>Qué hacer</strong> y guardá lugares para armar
+                tu plan.
               </p>
             </div>
           ) : null}

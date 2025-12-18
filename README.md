@@ -3,6 +3,7 @@
 Aplicación web para explorar actividades turísticas en Tigre (Buenos Aires) y armar un itinerario personalizado.
 
 ## Funcionalidades
+
 - Listado de actividades con filtros
 - Detalle de cada lugar con mapa interactivo
 - Guardado de favoritos
@@ -12,6 +13,7 @@ Aplicación web para explorar actividades turísticas en Tigre (Buenos Aires) y 
 - Enlaces directos a Google Maps
 
 ## Stack
+
 - React + TypeScript
 - Vite
 - Tailwind CSS
@@ -19,4 +21,5 @@ Aplicación web para explorar actividades turísticas en Tigre (Buenos Aires) y 
 - Leaflet / OpenStreetMap
 
 ## Objetivo
+
 Proyecto personal orientado a UX y frontend engineering, enfocado en lógica de producto y experiencia de usuario.

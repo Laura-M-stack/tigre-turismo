@@ -1,11 +1,9 @@
 import type { Place } from "../types/place";
-import { googleMapsDirectionsUrl } from "./maps";
-import { estimateTotalMinutes, formatMinutes, planSuggestion } from "./itinerary";
 
-export function buildItineraryShareText(
-  places: Place[],
-  siteBaseUrl: string,
-): string {
+import { estimateTotalMinutes, formatMinutes, planSuggestion } from "./itinerary";
+import { googleMapsDirectionsUrl } from "./maps";
+
+export function buildItineraryShareText(places: Place[], siteBaseUrl: string): string {
   const totalMinutes = estimateTotalMinutes(places);
   const summary = `Itinerario en Tigre — ${planSuggestion(totalMinutes)} (${formatMinutes(totalMinutes)})`;
 
