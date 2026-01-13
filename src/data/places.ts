@@ -181,7 +181,7 @@ export const places: Place[] = [
       "El recorrido incluye salones y galerías en dos niveles, con una propuesta cuidada y una experiencia visual enriquecedora.",
     ],
     duration: "1-2h",
-    budget: "medio",
+    budget: "bajo",
     tips: [
       {
         id: "mat-horarios",
@@ -640,7 +640,7 @@ export const places: Place[] = [
       "Resulta ideal para visitas de medio día y actividades al aire libre sin exigencia física.",
     ],
     duration: "medio-dia",
-    budget: "bajo",
+    budget: "gratis",
     zone: "Rincón de Milberg",
     tips: [
       {

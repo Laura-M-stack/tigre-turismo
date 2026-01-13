@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
 import PlaceCard from "../components/place/PlaceCard";
@@ -10,6 +10,23 @@ import { places } from "../data/places";
 import { setSEO } from "../lib/seo";
 import type { Budget, Category, Duration, Place } from "../types/place";
 
+type QuickPlan = {
+  id: string;
+  label: string;
+  predicate: (p: Place) => boolean;
+};
+
+type MasonryVars = React.CSSProperties & {
+  ["--tt-col"]?: number;
+  ["--tt-row"]?: number;
+  ["--tt-span"]?: number;
+};
+
+// Helper: asegura array de tags seguro
+function getTags(p: Place): string[] {
+  return Array.isArray(p.tags) ? p.tags : [];
+}
+
 export default function QueHacer() {
   useEffect(() => {
     setSEO(
@@ -18,37 +35,37 @@ export default function QueHacer() {
     );
   }, []);
 
-  const quickPlans = useMemo(
+  const quickPlans = useMemo<QuickPlan[]>(
     () => [
       {
         id: "familia",
         label: "👨‍👩‍👧 Familia",
-        predicate: (p: Place) => p.tags.includes("familia") || p.budget === "bajo",
+        predicate: (p) => getTags(p).includes("familia") || p.budget === "bajo",
       },
       {
         id: "pareja",
         label: "💑 Pareja",
-        predicate: (p: Place) => p.tags.includes("pareja"),
+        predicate: (p) => getTags(p).includes("pareja"),
       },
       {
         id: "lluvia",
         label: "🌧️ Día de lluvia",
-        predicate: (p: Place) => p.category === "museos" || p.tags.includes("lluvia"),
+        predicate: (p) => p.category === "museos" || getTags(p).includes("lluvia"),
       },
       {
         id: "naturaleza",
         label: "🌿 Naturaleza",
-        predicate: (p: Place) => p.category === "naturaleza",
+        predicate: (p) => p.category === "naturaleza",
       },
       {
         id: "aventura",
         label: "🎢 Aventura",
-        predicate: (p: Place) => p.category === "aventura",
+        predicate: (p) => p.category === "aventura",
       },
       {
         id: "bajo",
         label: "💸 Bajo presupuesto",
-        predicate: (p: Place) => p.budget === "bajo" || p.budget === "gratis",
+        predicate: (p) => p.budget === "bajo" || p.budget === "gratis",
       },
     ],
     [],
@@ -67,7 +84,7 @@ export default function QueHacer() {
     let result = places.filter((p) => {
       const name = p.name?.toLowerCase() ?? "";
       const desc = p.shortDescription?.toLowerCase() ?? "";
-      const tags = p.tags ?? [];
+      const tags = getTags(p);
 
       const matchesQuery =
         !query ||
@@ -89,6 +106,73 @@ export default function QueHacer() {
 
     return result;
   }, [q, category, duration, budget, quickPlan, quickPlans]);
+
+  // Layout helpers (sin any)
+  const UNIT = 24;
+
+  function getMasonryPlacement(index: number) {
+    // Bloques de 5 items (1 alto + 4 normales)
+    const block = Math.floor(index / 5);
+    const pos = index % 5;
+
+    const base = block * UNIT * 2;
+    const row1 = base + 1;
+    const row2 = base + 1 + UNIT;
+
+    const tallOnLeft = block % 2 === 0;
+
+    let col = 1;
+    let row = row1;
+    let span = UNIT;
+
+    if (tallOnLeft) {
+      if (pos === 0) {
+        col = 1;
+        row = row1;
+        span = UNIT * 2;
+      } else if (pos === 1) {
+        col = 2;
+        row = row1;
+        span = UNIT;
+      } else if (pos === 2) {
+        col = 3;
+        row = row1;
+        span = UNIT;
+      } else if (pos === 3) {
+        col = 2;
+        row = row2;
+        span = UNIT;
+      } else if (pos === 4) {
+        col = 3;
+        row = row2;
+        span = UNIT;
+      }
+    } else {
+      if (pos === 0) {
+        col = 1;
+        row = row1;
+        span = UNIT;
+      } else if (pos === 1) {
+        col = 2;
+        row = row1;
+        span = UNIT;
+      } else if (pos === 2) {
+        col = 3;
+        row = row1;
+        span = UNIT * 2;
+      } else if (pos === 3) {
+        col = 1;
+        row = row2;
+        span = UNIT;
+      } else if (pos === 4) {
+        col = 2;
+        row = row2;
+        span = UNIT;
+      }
+    }
+
+    return { col, row, span };
+  }
 
   return (
     <div className="pb-14">
@@ -115,7 +199,8 @@ export default function QueHacer() {
               </h1>
 
               <p className="mx-auto mt-4 max-w-2xl text-base text-white/90 md:text-xl">
-                Elegí actividades según tu tiempo, presupuesto o compañía y armá tu día sin improvisar.
+                Elegí actividades según tu tiempo, presupuesto o compañía y armá tu día sin
+                improvisar.
               </p>
 
               <div className="mt-7 flex flex-wrap justify-center gap-3">
@@ -197,54 +282,13 @@ export default function QueHacer() {
           "
         >
           {filtered.map((p, i) => {
-            // Bloques de 5 items (1 alto + 4 normales)
-            const block = Math.floor(i / 5);
-            const pos = i % 5;
+            const { col, row, span } = getMasonryPlacement(i);
 
-            // unidad (en filas del auto-rows)
-            const UNIT = 24;
-            const base = block * UNIT * 2;
-
-            const row1 = base + 1;
-            const row2 = base + 1 + UNIT;
-
-            const tallOnLeft = block % 2 === 0;
-
-            let col = 1;
-            let row = row1;
-            let span = UNIT;
-
-            if (tallOnLeft) {
-              if (pos === 0) {
-                col = 1; row = row1; span = UNIT * 2;
-              } else if (pos === 1) {
-                col = 2; row = row1; span = UNIT;
-              } else if (pos === 2) {
-                col = 3; row = row1; span = UNIT;
-              } else if (pos === 3) {
-                col = 2; row = row2; span = UNIT;
-              } else if (pos === 4) {
-                col = 3; row = row2; span = UNIT;
-              }
-            } else {
-              if (pos === 0) {
-                col = 1; row = row1; span = UNIT;
-              } else if (pos === 1) {
-                col = 2; row = row1; span = UNIT;
-              } else if (pos === 2) {
-                col = 3; row = row1; span = UNIT * 2;
-              } else if (pos === 3) {
-                col = 1; row = row2; span = UNIT;
-              } else if (pos === 4) {
-                col = 2; row = row2; span = UNIT;
-              }
-            }
-
-            const style = {
-              ["--tt-col" as any]: col,
-              ["--tt-row" as any]: row,
-              ["--tt-span" as any]: span,
-            } as CSSProperties;
+            const style: MasonryVars = {
+              "--tt-col": col,
+              "--tt-row": row,
+              "--tt-span": span,
+            };
 
             return (
               <div key={p.slug} className="tt-masonry-item h-full" style={style}>

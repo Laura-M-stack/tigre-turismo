@@ -174,17 +174,18 @@ export default function LugarDetalle() {
 
           <ul className="grid gap-4 sm:grid-cols-2">
             {place.tips.map((tip, index) => (
-              <motion.li
-                key={tip.id}
-                initial={{ opacity: 0, y: 24 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ duration: 0.45, ease: "easeOut", delay: index * 0.06 }}
-                className="rounded-2xl border-2 border-teal-900/90 bg-teal-600/20 p-5 shadow-sm"
-              >
-                <h3 className="mb-1 text-base font-semibold text-teal-800">{tip.title}</h3>
-                <p className="text-md text-muted-foreground leading-relaxed">{tip.description}</p>
-              </motion.li>
+              <li key={tip.id}>
+                <motion.div
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-80px" }}
+                  transition={{ duration: 0.45, ease: "easeOut", delay: index * 0.06 }}
+                  className="rounded-2xl border-2 border-teal-900/90 bg-teal-600/20 p-5 shadow-sm"
+                >
+                  <h3 className="mb-1 text-base font-semibold text-teal-800">{tip.title}</h3>
+                  <p className="text-md text-slate-800 leading-relaxed">{tip.description}</p>
+                </motion.div>
+              </li>
             ))}
           </ul>
         </section>

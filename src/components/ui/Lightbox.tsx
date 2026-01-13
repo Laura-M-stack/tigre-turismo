@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef } from "react";
+
 import AppImage from "./AppImage";
 
 type Item = { src: string; alt?: string };
