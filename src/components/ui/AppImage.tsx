@@ -1,31 +1,65 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 type Props = {
   src?: string;
   alt: string;
   className?: string;
+
+  // passthrough img props útiles
+  loading?: "eager" | "lazy";
+  decoding?: "async" | "auto" | "sync";
+  fetchPriority?: "high" | "low" | "auto";
 };
 
-export default function AppImage({ src, alt, className }: Props) {
-  const [broken, setBroken] = useState(false);
+function toWebpPath(src: string) {
+  const s = src.replace(/\\/g, "/");
+  if (s.toLowerCase().endsWith(".webp")) return s;
 
-  if (!src || broken) {
+  const withWebpExt = s.replace(/\.(jpe?g|png)$/i, ".webp");
+
+  // public/images/webp
+  if (withWebpExt.startsWith("images/")) {
+    return withWebpExt.replace(/^images\//, "images/webp/");
+  }
+
+  return withWebpExt;
+}
+
+export default function AppImage({
+  src,
+  alt,
+  className,
+  loading = "lazy",
+  decoding = "async",
+  fetchPriority = "auto",
+}: Props) {
+  // 0 = intentando webp, 1 = fallback al original, 2 = roto
+  const [stage, setStage] = useState<0 | 1 | 2>(0);
+
+  const webpSrc = useMemo(() => (src ? toWebpPath(src) : undefined), [src]);
+
+  const key = `${src ?? "no-src"}`;
+
+  if (!src || stage === 2) {
     return (
-      <div
-        className={`h-44 w-full object-cover transition group-hover:scale-[1.02] ${className ?? ""}`}
-      >
-        <span className="text-xs">Sin imagen</span>
+      <div className={`flex items-center justify-center bg-slate-100 text-slate-500 ${className ?? ""}`}>
+        <span className="text-sm">Sin imagen</span>
       </div>
     );
   }
 
+  const finalSrc = stage === 0 ? webpSrc : src;
+
   return (
     <img
-      src={src}
+      key={key}
+      src={finalSrc}
       alt={alt}
       className={className}
-      loading="lazy"
-      onError={() => setBroken(true)}
+      loading={loading}
+      decoding={decoding}
+      fetchPriority={fetchPriority}
+      onError={() => setStage((prev) => (prev === 0 ? 1 : 2))}
     />
   );
 }

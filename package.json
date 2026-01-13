@@ -12,10 +12,11 @@
     "format": "prettier . --check",
     "format:write": "prettier . --write",
     "prepare": "husky",
-    "predeploy": "npm run build",
+    "predeploy": "pnpm build",
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "framer-motion": "^12.23.26",
     "leaflet": "^1.9.4",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",

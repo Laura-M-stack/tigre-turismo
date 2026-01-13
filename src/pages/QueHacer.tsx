@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type CSSProperties } from "react";
+import { Link } from "react-router-dom";
 
 import PlaceCard from "../components/place/PlaceCard";
 import PlaceFilters from "../components/place/PlaceFilters";
 import AppImage from "../components/ui/AppImage";
-import Tag from "../components/ui/Tag";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
 import { places } from "../data/places";
 import { setSEO } from "../lib/seo";
 import type { Budget, Category, Duration, Place } from "../types/place";
@@ -16,16 +18,12 @@ export default function QueHacer() {
     );
   }, []);
 
-  /* =========================
-     PLANES SUGERIDOS
-     ========================= */
   const quickPlans = useMemo(
     () => [
       {
         id: "familia",
         label: "👨‍👩‍👧 Familia",
-        predicate: (p: Place) =>
-          p.tags.includes("familia") || p.budget === "bajo",
+        predicate: (p: Place) => p.tags.includes("familia") || p.budget === "bajo",
       },
       {
         id: "pareja",
@@ -35,8 +33,7 @@ export default function QueHacer() {
       {
         id: "lluvia",
         label: "🌧️ Día de lluvia",
-        predicate: (p: Place) =>
-          p.category === "museos" || p.tags.includes("lluvia"),
+        predicate: (p: Place) => p.category === "museos" || p.tags.includes("lluvia"),
       },
       {
         id: "naturaleza",
@@ -51,7 +48,7 @@ export default function QueHacer() {
       {
         id: "bajo",
         label: "💸 Bajo presupuesto",
-        predicate: (p: Place) => p.budget === "bajo",
+        predicate: (p: Place) => p.budget === "bajo" || p.budget === "gratis",
       },
     ],
     [],
@@ -59,9 +56,6 @@ export default function QueHacer() {
 
   const [quickPlan, setQuickPlan] = useState<string | null>(null);
 
-  /* =========================
-     FILTROS EXISTENTES
-     ========================= */
   const [q, setQ] = useState("");
   const [category, setCategory] = useState<Category | "all">("all");
   const [duration, setDuration] = useState<Duration | "all">("all");
@@ -71,11 +65,15 @@ export default function QueHacer() {
     const query = q.trim().toLowerCase();
 
     let result = places.filter((p) => {
+      const name = p.name?.toLowerCase() ?? "";
+      const desc = p.shortDescription?.toLowerCase() ?? "";
+      const tags = p.tags ?? [];
+
       const matchesQuery =
         !query ||
-        p.name.toLowerCase().includes(query) ||
-        p.shortDescription.toLowerCase().includes(query) ||
-        p.tags.some((t) => t.toLowerCase().includes(query));
+        name.includes(query) ||
+        desc.includes(query) ||
+        tags.some((t) => t.toLowerCase().includes(query));
 
       const matchesCategory = category === "all" || p.category === category;
       const matchesDuration = duration === "all" || p.duration === duration;
@@ -86,99 +84,182 @@ export default function QueHacer() {
 
     if (quickPlan) {
       const plan = quickPlans.find((p) => p.id === quickPlan);
-      if (plan) {
-        result = result.filter(plan.predicate);
-      }
+      if (plan) result = result.filter(plan.predicate);
     }
 
     return result;
   }, [q, category, duration, budget, quickPlan, quickPlans]);
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10">
-      {/* =========================
-          BANNER
-          ========================= */}
-      <section className="relative overflow-hidden rounded-3xl border bg-white/70 shadow-sm backdrop-blur">
+    <div className="pb-14">
+      {/* HERO full-bleed */}
+      <section className="full-bleed relative overflow-hidden">
         <AppImage
           src="images/museo-de-arte-tigre-3.jpg"
           alt="Qué hacer en Tigre"
-          className="h-56 w-full object-cover md:h-120"
+          className="h-[62vh] w-full object-cover md:h-[72vh]"
+          loading="eager"
+          fetchPriority="high"
         />
-        <div className="absolute inset-0 bg-linear-to-r from-black/55 via-black/25 to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/35 to-black/10" />
 
-        <div className="absolute inset-0 flex items-start md:items-end-safe">
-          <div className="p-6 md:p-10 text-white">
-            <h1 className="text-3xl font-bold tracking-tight md:text-4xl">
-              Qué hacer en Tigre
-            </h1>
-            <p className="mt-3 max-w-xl text-white/90 text-base md:text-lg">
-              Filtrá ideas según tu plan y guardá favoritos para armar tu itinerario.
-            </p>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="page-container w-full">
+            <div className="mx-auto max-w-3xl text-center text-white">
+              <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-lg font-medium backdrop-blur">
+                🌿 Delta • 🛶 Paseos • 🏛️ Museos
+              </p>
 
-            <div className="mt-4 flex flex-wrap gap-2">
-              <Tag>Delta</Tag>
-              <Tag>Paseos</Tag>
-              <Tag>Naturaleza</Tag>
+              <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">
+                Qué hacer en Tigre
+              </h1>
+
+              <p className="mx-auto mt-4 max-w-2xl text-base text-white/90 md:text-xl">
+                Elegí actividades según tu tiempo, presupuesto o compañía y armá tu día sin improvisar.
+              </p>
+
+              <div className="mt-7 flex flex-wrap justify-center gap-3">
+                <Link to="/itinerario">
+                  <Button>Ver mi itinerario</Button>
+                </Link>
+                <Link to="/como-llegar">
+                  <Button variant="ghost">Cómo llegar</Button>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* =========================
-          PLANES RÁPIDOS
-          ========================= */}
-      <div className="mt-6 flex flex-wrap gap-2">
-        {quickPlans.map((plan) => (
-          <button
-            key={plan.id}
-            onClick={() =>
-              setQuickPlan((prev) => (prev === plan.id ? null : plan.id))
-            }
-            className={[
-              "rounded-full px-4 py-2 text-sm transition",
-              quickPlan === plan.id
-                ? "bg-slate-900 text-white"
-                : "bg-white/70 text-slate-700 hover:bg-white",
-            ].join(" ")}
-          >
-            {plan.label}
-          </button>
-        ))}
-      </div>
+      {/* CONTENIDO */}
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        {/* Aviso de llegada (Mitre) — minimal, no molesta */}
+        <Card className="p-6">
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="text-lg font-semibold">🚧 Llegar en verano</h2>
+              <p className="mt-1 text-lg text-slate-600">
+                Si el <b>Tren Mitre</b> no está disponible, podés venir igual por{" "}
+                <b>Tren de la Costa</b>, colectivo o auto.
+              </p>
+            </div>
+            <Link to="/como-llegar">
+              <Button>Ver opciones</Button>
+            </Link>
+          </div>
+        </Card>
 
-      {/* =========================
-          FILTROS
-          ========================= */}
-      <p className="mt-4 mb-3 text-sm text-slate-600">
-        Tip: guardá lugares para armar tu itinerario ideal.
-      </p>
+        {/* Planes rápidos */}
+        <div className="mt-6 flex flex-wrap gap-2">
+          {quickPlans.map((plan) => {
+            const active = quickPlan === plan.id;
 
-      <PlaceFilters
-        q={q}
-        setQ={setQ}
-        category={category}
-        setCategory={setCategory}
-        duration={duration}
-        setDuration={setDuration}
-        budget={budget}
-        setBudget={setBudget}
-      />
+            return (
+              <button
+                key={plan.id}
+                type="button"
+                onClick={() => setQuickPlan((prev) => (prev === plan.id ? null : plan.id))}
+                className={[
+                  "rounded-full px-4 py-2 text-lg transition",
+                  "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+                  active ? "bg-teal-900 text-white border-teal-900 hover:bg-teal-900" : "",
+                ].join(" ")}
+              >
+                {plan.label}
+              </button>
+            );
+          })}
+        </div>
 
-      {/* =========================
-          GRID
-          ========================= */}
-      <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {filtered.map((p) => (
-          <PlaceCard key={p.slug} place={p} />
-        ))}
-      </div>
-
-      {!filtered.length ? (
-        <p className="mt-8 rounded-2xl border bg-white/70 p-6 text-sm text-slate-700">
-          No se encontraron resultados. Probá con otra búsqueda o quitá filtros.
+        {/* Filtros */}
+        <p className="mt-5 mb-3 text-lg text-slate-600">
+          Tip: guardá lugares para armar tu itinerario ideal.
         </p>
-      ) : null}
+
+        <PlaceFilters
+          q={q}
+          setQ={setQ}
+          category={category}
+          setCategory={setCategory}
+          duration={duration}
+          setDuration={setDuration}
+          budget={budget}
+          setBudget={setBudget}
+        />
+
+        {/* Grid */}
+        <div
+          className="
+            mt-6 grid gap-4
+            sm:grid-cols-2
+            lg:grid-cols-3
+            lg:[auto-rows:10px]
+          "
+        >
+          {filtered.map((p, i) => {
+            // Bloques de 5 items (1 alto + 4 normales)
+            const block = Math.floor(i / 5);
+            const pos = i % 5;
+
+            // unidad (en filas del auto-rows)
+            const UNIT = 24;
+            const base = block * UNIT * 2;
+
+            const row1 = base + 1;
+            const row2 = base + 1 + UNIT;
+
+            const tallOnLeft = block % 2 === 0;
+
+            let col = 1;
+            let row = row1;
+            let span = UNIT;
+
+            if (tallOnLeft) {
+              if (pos === 0) {
+                col = 1; row = row1; span = UNIT * 2;
+              } else if (pos === 1) {
+                col = 2; row = row1; span = UNIT;
+              } else if (pos === 2) {
+                col = 3; row = row1; span = UNIT;
+              } else if (pos === 3) {
+                col = 2; row = row2; span = UNIT;
+              } else if (pos === 4) {
+                col = 3; row = row2; span = UNIT;
+              }
+            } else {
+              if (pos === 0) {
+                col = 1; row = row1; span = UNIT;
+              } else if (pos === 1) {
+                col = 2; row = row1; span = UNIT;
+              } else if (pos === 2) {
+                col = 3; row = row1; span = UNIT * 2;
+              } else if (pos === 3) {
+                col = 1; row = row2; span = UNIT;
+              } else if (pos === 4) {
+                col = 2; row = row2; span = UNIT;
+              }
+            }
+
+            const style = {
+              ["--tt-col" as any]: col,
+              ["--tt-row" as any]: row,
+              ["--tt-span" as any]: span,
+            } as CSSProperties;
+
+            return (
+              <div key={p.slug} className="tt-masonry-item h-full" style={style}>
+                <PlaceCard place={p} />
+              </div>
+            );
+          })}
+        </div>
+
+        {!filtered.length ? (
+          <p className="mt-8 rounded-2xl border bg-white/70 p-6 text-lg text-slate-700">
+            No se encontraron resultados. Probá con otra búsqueda o quitá filtros.
+          </p>
+        ) : null}
+      </div>
     </div>
   );
 }

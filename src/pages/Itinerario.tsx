@@ -1,20 +1,25 @@
-import { useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 
 import PlaceCard from "../components/place/PlaceCard";
-import PlaceMap from "../components/place/PlaceMap";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import Tag from "../components/ui/Tag";
 import { places } from "../data/places";
 import { estimateTotalMinutes, formatMinutes, planSuggestion } from "../lib/itinerary";
-import {
-  getItineraryOrder,
-  normalizeOrder,
-  setItineraryOrder,
-} from "../lib/itineraryStorage";
+import { getItineraryOrder, normalizeOrder, setItineraryOrder } from "../lib/itineraryStorage";
 import { setSEO } from "../lib/seo";
 import { buildItineraryShareText } from "../lib/share";
 import { getFavs } from "../lib/storage";
+
+const PlaceMap = lazy(() => import("../components/place/PlaceMap"));
+
+// ✅ slugs válidos: calculado una vez (sin hooks)
+const VALID_SLUGS = new Set(places.map((p) => p.slug));
+
+function clampToValid(slugs: string[]) {
+  return slugs.filter((s) => VALID_SLUGS.has(s));
+}
 
 export default function Itinerario() {
   useEffect(() => {
@@ -24,34 +29,24 @@ export default function Itinerario() {
     );
   }, []);
 
-  const [order, setOrder] = useState<string[]>(() =>
-    normalizeOrder(getFavs(), getItineraryOrder()),
-  );
+  const [order, setOrder] = useState<string[]>(() => {
+    const initial = normalizeOrder(getFavs(), getItineraryOrder());
+    return clampToValid(initial);
+  });
+
   const [copied, setCopied] = useState(false);
 
-  // Persistimos el orden SOLO acá (no duplicar en move/clear)
+  // Persistimos el orden SOLO acá
   useEffect(() => {
     setItineraryOrder(order);
   }, [order]);
 
   const orderedPlaces = useMemo(() => {
     const bySlug = new Map(places.map((p) => [p.slug, p] as const));
-
     return order
       .map((slug) => bySlug.get(slug))
       .filter((p): p is (typeof places)[number] => Boolean(p));
   }, [order]);
-
-  useEffect(() => {
-    const valid = new Set(places.map((p) => p.slug));
-    const next = order.filter((s) => valid.has(s));
-    if (next.length !== order.length) {
-      setOrder(next);
-      setItineraryOrder(next);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
 
   const totalMinutes = useMemo(
     () => estimateTotalMinutes(orderedPlaces),
@@ -61,16 +56,23 @@ export default function Itinerario() {
   const suggestion = useMemo(() => planSuggestion(totalMinutes), [totalMinutes]);
 
   const move = (index: number, dir: -1 | 1) => {
-    const next = [...order];
-    const target = index + dir;
-    if (target < 0 || target >= next.length) return;
-
-    [next[index], next[target]] = [next[target], next[index]];
-    setOrder(next);
+    setOrder((prev) => {
+      const next = [...prev];
+      const target = index + dir;
+      if (target < 0 || target >= next.length) return prev;
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
   };
 
-  const clearOrder = () => {
-    setOrder([]);
+  // Mejor UX: volver al orden "natural" de favoritos (no el orden guardado)
+  const resetOrder = () => {
+    const favs = clampToValid(getFavs());
+    setOrder(favs);
+  };
+
+  const removeFromItinerary = (slug: string) => {
+    setOrder((prev) => prev.filter((s) => s !== slug));
   };
 
   const copyItinerary = async () => {
@@ -82,7 +84,6 @@ export default function Itinerario() {
       setCopied(true);
       window.setTimeout(() => setCopied(false), 1500);
     } catch {
-      // fallback simple (por permisos del navegador)
       const ta = document.createElement("textarea");
       ta.value = text;
       document.body.appendChild(ta);
@@ -93,10 +94,11 @@ export default function Itinerario() {
       window.setTimeout(() => setCopied(false), 1500);
     }
   };
+
   if (!places.length) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <p className="text-sm text-slate-600">Cargando itinerario…</p>
+        <p className="text-lg text-slate-600">Cargando itinerario…</p>
       </div>
     );
   }
@@ -104,35 +106,36 @@ export default function Itinerario() {
   if (!order.length) {
     return (
       <div className="mx-auto max-w-6xl px-4 py-10">
-        <p className="text-sm text-slate-600">No tienes favoritos.</p>
+        <div className="rounded-3xl border border-slate-200 bg-white/70 p-8">
+          <h1 className="text-2xl font-semibold tracking-tight">Mi itinerario</h1>
+          <p className="mt-2 text-lg text-slate-600">Todavía no guardaste lugares.</p>
+
+          <div className="mt-5 flex flex-wrap gap-3">
+            <Link to="/que-hacer">
+              <Button>Explorar qué hacer</Button>
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
 
-  const removeFromItinerary = (slug: string) => {
-    const next = order.filter((s) => s !== slug);
-    setOrder(next);
-    setItineraryOrder(next);
-  };
-
-
   return (
     <div className="mx-auto max-w-6xl px-4 py-10">
-      <h1 className="text-2xl font-bold tracking-tight">Mi itinerario</h1>
-      <p className="mt-2 text-slate-600">
+      <h1 className="text-2xl font-semibold tracking-tight">Mi itinerario</h1>
+      <p className="mt-2 text-lg text-slate-600">
         Ordená tus favoritos y obtené una estimación del tiempo total.
       </p>
 
-      {/* Layout correcto: 3 columnas -> Resumen (1) + contenido (2) */}
       <div className="mt-6 grid gap-4 md:grid-cols-3">
-        {/* Columna 1: Resumen */}
+        {/* Resumen */}
         <Card>
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between px-4 pt-6">
             <h2 className="font-semibold">Resumen</h2>
             <Tag>{suggestion}</Tag>
           </div>
 
-          <div className="mt-3 space-y-2 text-sm text-slate-700">
+          <div className="mt-3 space-y-2 px-4 text-lg text-slate-700">
             <div className="flex items-center justify-between">
               <span>Lugares</span>
               <span className="font-semibold">{orderedPlaces.length}</span>
@@ -143,24 +146,32 @@ export default function Itinerario() {
             </div>
           </div>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            <Button variant="ghost" onClick={clearOrder}>
-              Limpiar orden
+          <div className="mt-4 flex flex-wrap gap-2 px-4 pb-4">
+            <Button variant="ghost" onClick={resetOrder}>
+              Resetear orden
             </Button>
 
             <Button onClick={copyItinerary} disabled={!orderedPlaces.length}>
-              {copied ? "Copiado ✓" : "Copiar itinerario"}
+              {copied ? "Copiado ✓" : "Copiar plan del día"}
             </Button>
           </div>
 
-          <p className="mt-3 text-xs text-slate-500">
-            Estimación aproximada. No incluye traslados ni esperas.
+          <p className="px-4 pb-6 text-base text-slate-500">
+            Tiempo estimado solo para actividades. No contempla traslados, filas ni pausas para comer.
           </p>
         </Card>
 
-        {/* Columnas 2-3: Mapa + lista */}
+        {/* Mapa + lista */}
         <div className="md:col-span-2">
-          <PlaceMap places={orderedPlaces} height={360} />
+          <Suspense
+            fallback={
+              <div className="rounded-3xl border border-slate-200 bg-white/70 p-6 text-slate-700">
+                Cargando mapa…
+              </div>
+            }
+          >
+            <PlaceMap places={orderedPlaces} height={360} />
+          </Suspense>
 
           <div className="mt-4 grid gap-4">
             {orderedPlaces.map((p, i) => (
@@ -189,25 +200,16 @@ export default function Itinerario() {
                   <Button
                     onClick={() => removeFromItinerary(p.slug)}
                     aria-label="Quitar del itinerario"
-                    className="h-8 w-8 px-0 rounded-lg bg-red-50 text-red-600 hover:bg-red-100"
+                    className="h-8 w-8 rounded-lg bg-red-50 px-0 text-red-600 hover:bg-red-100"
                   >
                     🗑️
                   </Button>
                 </div>
+
                 <PlaceCard place={p} />
               </div>
             ))}
           </div>
-
-          {!orderedPlaces.length ? (
-            <div className="mt-6 rounded-xl border bg-slate-50 p-6 text-sm text-slate-700">
-              <p className="font-medium">Tu itinerario está vacío</p>
-              <p className="mt-1">
-                Explorá la sección <strong>Qué hacer</strong> y guardá lugares para armar
-                tu plan.
-              </p>
-            </div>
-          ) : null}
         </div>
       </div>
     </div>

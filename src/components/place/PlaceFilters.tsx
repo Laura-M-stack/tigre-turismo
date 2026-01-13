@@ -25,7 +25,7 @@ export default function PlaceFilters({
   return (
     <div className="grid gap-3 md:grid-cols-4">
       <div className="grid gap-1">
-        <label htmlFor="q" className="text-sm font-medium text-slate-700">
+        <label htmlFor="q" className="text-md font-medium text-slate-700">
           Buscar
         </label>
         <Input className="bg-white"
@@ -38,12 +38,12 @@ export default function PlaceFilters({
       </div>
 
       <div className="grid gap-1">
-        <label htmlFor="category" className="text-sm font-medium text-slate-700">
+        <label htmlFor="category" className="text-md font-medium text-slate-700">
           Categoría
         </label>
         <select
           id="category"
-          className="rounded-xl border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-300"
+          className="control"
           value={category}
           onChange={(e) => setCategory(e.target.value as Category | "all")}
         >
@@ -60,12 +60,12 @@ export default function PlaceFilters({
       </div>
 
       <div className="grid gap-1">
-        <label htmlFor="duration" className="text-sm font-medium text-slate-700">
+        <label htmlFor="duration" className="text-md font-medium text-slate-700">
           Duración
         </label>
         <select
           id="duration"
-          className="rounded-xl border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-300"
+          className="control"
           value={duration}
           onChange={(e) => setDuration(e.target.value as Duration | "all")}
         >
@@ -77,12 +77,12 @@ export default function PlaceFilters({
       </div>
 
       <div className="grid gap-1">
-        <label htmlFor="budget" className="text-sm font-medium text-slate-700">
+        <label htmlFor="budget" className="text-md font-medium text-slate-700">
           Presupuesto
         </label>
         <select
           id="budget"
-          className="rounded-xl border bg-white px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-slate-300"
+          className="control"
           value={budget}
           onChange={(e) => setBudget(e.target.value as Budget | "all")}
         >
