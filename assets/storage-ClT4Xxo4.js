@@ -1,0 +1,1 @@
+const a="tigre:favs:v1";function n(){try{const t=localStorage.getItem(a);return t?JSON.parse(t):[]}catch{return[]}}function o(t){localStorage.setItem(a,JSON.stringify(t))}function s(t){const e=new Set(n());e.has(t)?e.delete(t):e.add(t);const r=Array.from(e);return o(r),r}export{n as g,s as t};
