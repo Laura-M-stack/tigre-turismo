@@ -1,16 +1,23 @@
 # Tigre Turismo
 
-Aplicación web para explorar actividades turísticas en Tigre (Buenos Aires) y armar un itinerario personalizado.
+Aplicación web para explorar actividades turísticas en Tigre (Buenos Aires) y organizar una visita de forma simple y práctica.
+
+El objetivo es ayudar a las personas a decidir **qué hacer**, **cómo llegar** y **cómo armar un itinerario**, priorizando una buena experiencia de usuario.
 
 ## Funcionalidades
 
-- Listado de actividades con filtros
-- Detalle de cada lugar con mapa interactivo
-- Guardado de favoritos
-- Itinerario ordenable con estimación de tiempo
+- Listado de actividades y lugares turísticos
+- Filtros por categoría, duración y presupuesto
+- Planes rápidos (familia, pareja, naturaleza, lluvia, etc.)
+- Detalle de cada lugar con:
+  - Galería de imágenes
+  - Información relevante y tips
+  - Mapa interactivo
+- Guardado de lugares favoritos
+- Itinerario personalizado y ordenable
 - Mapa del itinerario con todos los puntos
-- Exportar itinerario para compartir
 - Enlaces directos a Google Maps
+- Diseño responsive y optimizado para mobile
 
 ## Stack
 
@@ -20,6 +27,17 @@ Aplicación web para explorar actividades turísticas en Tigre (Buenos Aires) y 
 - React Router
 - Leaflet / OpenStreetMap
 
-## Objetivo
+## Enfoque
 
-Proyecto personal orientado a UX y frontend engineering, enfocado en lógica de producto y experiencia de usuario.
+Proyecto personal orientado a **frontend engineering y UX**, con foco en:
+
+- Arquitectura de componentes
+- Accesibilidad y semántica
+- Performance y carga de imágenes
+- Lógica de producto aplicada a una experiencia real
+- Código mantenible y escalable
+
+## Estado
+
+Proyecto finalizado como showcase personal.  
+No tiene fines comerciales.
