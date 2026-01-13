@@ -47,7 +47,6 @@ function useInView<T extends HTMLElement>(options?: IntersectionObserverInit) {
   return { ref, inView };
 }
 
-// Evita inline styles: clases “permitidas” (ajustá si necesitás más altos)
 function heightClass(height: number) {
   const allowed = new Map<number, string>([
     [240, "h-[240px]"],

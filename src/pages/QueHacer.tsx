@@ -107,7 +107,7 @@ export default function QueHacer() {
     return result;
   }, [q, category, duration, budget, quickPlan, quickPlans]);
 
-  // Layout helpers (sin any)
+  // Layout helpers
   const UNIT = 24;
 
   function getMasonryPlacement(index: number) {

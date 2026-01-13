@@ -13,9 +13,8 @@ const GMAPS_PUERTO_FRUTOS =
 const GMAPS_ESTACION_TIGRE =
   "https://www.google.com/maps/search/?api=1&query=Estaci%C3%B3n%20Tigre%2C%20Buenos%20Aires";
 
-// Si no querés poner links exactos ahora, dejalos así (pero que sean reales / útiles)
-const INFO_MITRE = "https://www.argentina.gob.ar/noticias";
-const INFO_COSTA = "https://www.argentina.gob.ar/noticias";
+const INFO_MITRE = "https://www.argentina.gob.ar/transporte/trenes-argentinos/areametropolitana/retiro-tigre";
+const INFO_COSTA = "https://www.trendelacosta.com.ar";
 
 export default function ComoLlegar() {
   useEffect(() => {

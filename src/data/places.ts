@@ -426,7 +426,7 @@ export const places: Place[] = [
   },
 
   // =========================
-  // CLUBES DE REMO (pedidos)
+  // CLUBES DE REMO
   // =========================
   {
     slug: "clubes-de-remo",

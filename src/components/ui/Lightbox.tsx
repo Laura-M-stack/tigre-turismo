@@ -42,7 +42,7 @@ export default function Lightbox({ items, index, onClose, onPrev, onNext }: Prop
     const prevOverflow = document.body.style.overflow;
     const prevPaddingRight = document.body.style.paddingRight;
 
-    // Compensa scrollbar para que no “salte” el layout (opcional pero lindo)
+    // Compensa scrollbar para que no “salte” el layout
     const scrollbarW = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
     if (scrollbarW > 0) document.body.style.paddingRight = `${scrollbarW}px`;
@@ -99,7 +99,7 @@ export default function Lightbox({ items, index, onClose, onPrev, onNext }: Prop
     }
   }, [prevSrc, nextSrc]);
 
-  // Swipe simple (sin libs)
+  // Swipe simple
   useEffect(() => {
     const el = panelRef.current;
     if (!el) return;
