@@ -1,1 +1,0 @@
-import{j as o}from"./motion-Y783SViA.js";function l({children:e,variant:t="default"}){const s="inline-flex items-center rounded-full px-3 py-1 text-md font-semibold",r=t==="overlay"?"bg-white/10 text-white backdrop-blur border border-white/30":"bg-slate-100 text-slate-700";return o.jsx("span",{className:`${s} ${r}`,children:e})}export{l as T};
