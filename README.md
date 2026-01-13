@@ -2,6 +2,9 @@
 
 Aplicación web para explorar actividades turísticas en Tigre (Buenos Aires) y organizar una visita de forma simple y práctica.
 
+🌐 **Demo:**  
+https://laura-m-stack.github.io/tigre-turismo/
+
 El objetivo es ayudar a las personas a decidir **qué hacer**, **cómo llegar** y **cómo armar un itinerario**, priorizando una buena experiencia de usuario.
 
 ## Funcionalidades
