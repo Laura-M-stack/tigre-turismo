@@ -15,7 +15,7 @@ export default function PlaceCard({ place }: Props) {
     <article
       className="
         group relative h-full overflow-hidden
-        min-h-[320px] max-h-[360px]
+        min-h-[350px] max-h-[360px]
         md:max-h-none
         rounded-3xl border border-slate-200/70 bg-white shadow-sm
       "
