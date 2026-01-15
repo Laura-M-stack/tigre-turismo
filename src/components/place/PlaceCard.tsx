@@ -1,4 +1,4 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 import { googleMapsDirectionsUrl } from "../../lib/maps";
 import type { Place } from "../../types/place";
@@ -11,11 +11,15 @@ type Props = {
 };
 
 export default function PlaceCard({ place }: Props) {
-  const { pathname } = useLocation();
-  const isDetail = pathname.startsWith("/lugares/");
-
   return (
-    <article className="group relative h-full overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-sm">
+    <article
+      className="
+        group relative h-full overflow-hidden
+        min-h-[320px] max-h-[360px]
+        md:max-h-none
+        rounded-3xl border border-slate-200/70 bg-white shadow-sm
+      "
+    >
       <div className="relative h-full">
         <AppImage
           src={place.coverImage}
@@ -47,8 +51,7 @@ export default function PlaceCard({ place }: Props) {
 
         {/* Bottom content */}
         <div className="absolute bottom-0 left-0 right-0 p-5">
-          {/* ⬇️ menos bold */}
-          <h3 className="font-semibold tracking-tight text-white text-shadow-lg md:text-2xl">
+          <h3 className="text-white text-shadow-lg font-semibold tracking-tight md:text-2xl">
             {place.name}
           </h3>
 
@@ -68,13 +71,11 @@ export default function PlaceCard({ place }: Props) {
             </div>
           ) : null}
 
-          {/* CTAs (siempre visibles y con contraste) */}
-          <div className="mt-5 flex flex-wrap gap-2">
-            {!isDetail ? (
-              <Link to={`/lugares/${place.slug}`}>
-                <Button className="shadow-lg">Ver detalle</Button>
-              </Link>
-            ) : null}
+          {/* CTAs */}
+          <div className="mt-4 flex flex-wrap gap-2">
+            <Link to={`/lugares/${place.slug}`}>
+              <Button className="shadow-lg">Ver detalle</Button>
+            </Link>
 
             {typeof place.lat === "number" && typeof place.lng === "number" ? (
               <a
@@ -84,12 +85,14 @@ export default function PlaceCard({ place }: Props) {
               >
                 <Button
                   variant="ghost"
-                  className="border border-white/55 bg-white/15 text-white shadow-lg ring-1 ring-white/10 backdrop-blur
-             hover:bg-white/30 hover:border-white/70"
+                  className="
+                    border border-white/55 bg-white/15 text-white shadow-lg
+                    ring-1 ring-white/10 backdrop-blur
+                    hover:bg-white/30 hover:border-white/70
+                  "
                 >
                   Cómo llegar
                 </Button>
-
               </a>
             ) : null}
           </div>
