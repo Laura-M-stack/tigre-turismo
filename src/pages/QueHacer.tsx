@@ -16,15 +16,77 @@ type QuickPlan = {
   predicate: (p: Place) => boolean;
 };
 
-type MasonryVars = React.CSSProperties & {
-  ["--tt-col"]?: number;
-  ["--tt-row"]?: number;
-  ["--tt-span"]?: number;
-};
+type SortKey = "relevance" | "popular" | "budget_low" | "duration_short";
 
-// Helper: asegura array de tags seguro
 function getTags(p: Place): string[] {
   return Array.isArray(p.tags) ? p.tags : [];
+}
+
+function includesQuery(p: Place, query: string) {
+  if (!query) return true;
+  const q = query.toLowerCase();
+  const name = p.name?.toLowerCase() ?? "";
+  const desc = p.shortDescription?.toLowerCase() ?? "";
+  const tags = getTags(p).map((t) => t.toLowerCase());
+  return (
+    name.includes(q) ||
+    desc.includes(q) ||
+    tags.some((t) => t.includes(q))
+  );
+}
+
+// Heurística simple y estable (sin analytics):
+// - empuja "gratis/bajo" y tags útiles
+// - da un plus a museos/naturaleza (muy buscados)
+// - si hay query, prioriza matches por nombre > tags > descripción
+function scorePlace(p: Place, query: string) {
+  let s = 0;
+
+  // Budget
+  if (p.budget === "gratis") s += 5;
+  if (p.budget === "bajo") s += 3;
+
+  // Categories con demanda típica
+  if (p.category === "museos") s += 2;
+  if (p.category === "naturaleza") s += 2;
+
+  const tags = getTags(p);
+
+  // Tags "de decisión"
+  if (tags.includes("familia")) s += 2;
+  if (tags.includes("pareja")) s += 2;
+  if (tags.includes("lluvia")) s += 1;
+  if (tags.includes("fotos")) s += 1;
+
+  // Query relevance
+  const q = query.trim().toLowerCase();
+  if (q) {
+    const name = p.name?.toLowerCase() ?? "";
+    const desc = p.shortDescription?.toLowerCase() ?? "";
+    const t = tags.map((x) => x.toLowerCase());
+
+    if (name.includes(q)) s += 6;
+    else if (t.some((x) => x.includes(q))) s += 4;
+    else if (desc.includes(q)) s += 2;
+  }
+
+  return s;
+}
+
+function durationWeight(d: Place["duration"]) {
+  // Ajustá si tu union tiene otros valores
+  if (d === "medio-dia") return 2;
+  if (d === "dia-completo") return 3;
+  if (d === "1-2h") return 1;
+  return 2;
+}
+
+function budgetWeight(b: Place["budget"]) {
+  if (b === "gratis") return 0;
+  if (b === "bajo") return 1;
+  if (b === "medio") return 2;
+  if (b === "alto") return 3;
+  return 2;
 }
 
 export default function QueHacer() {
@@ -40,7 +102,7 @@ export default function QueHacer() {
       {
         id: "familia",
         label: "👨‍👩‍👧 Familia",
-        predicate: (p) => getTags(p).includes("familia") || p.budget === "bajo",
+        predicate: (p) => getTags(p).includes("familia") || p.budget === "bajo" || p.budget === "gratis",
       },
       {
         id: "pareja",
@@ -77,25 +139,32 @@ export default function QueHacer() {
   const [category, setCategory] = useState<Category | "all">("all");
   const [duration, setDuration] = useState<Duration | "all">("all");
   const [budget, setBudget] = useState<Budget | "all">("all");
+  const [sort, setSort] = useState<SortKey>("relevance");
+
+  const hasAnyFilter =
+    Boolean(q.trim()) ||
+    category !== "all" ||
+    duration !== "all" ||
+    budget !== "all" ||
+    Boolean(quickPlan);
+
+  const clearAll = () => {
+    setQ("");
+    setCategory("all");
+    setDuration("all");
+    setBudget("all");
+    setQuickPlan(null);
+    setSort("relevance");
+  };
 
   const filtered = useMemo(() => {
-    const query = q.trim().toLowerCase();
+    const query = q.trim();
 
     let result = places.filter((p) => {
-      const name = p.name?.toLowerCase() ?? "";
-      const desc = p.shortDescription?.toLowerCase() ?? "";
-      const tags = getTags(p);
-
-      const matchesQuery =
-        !query ||
-        name.includes(query) ||
-        desc.includes(query) ||
-        tags.some((t) => t.toLowerCase().includes(query));
-
+      const matchesQuery = includesQuery(p, query);
       const matchesCategory = category === "all" || p.category === category;
       const matchesDuration = duration === "all" || p.duration === duration;
       const matchesBudget = budget === "all" || p.budget === budget;
-
       return matchesQuery && matchesCategory && matchesDuration && matchesBudget;
     });
 
@@ -104,79 +173,25 @@ export default function QueHacer() {
       if (plan) result = result.filter(plan.predicate);
     }
 
-    return result;
-  }, [q, category, duration, budget, quickPlan, quickPlans]);
-
-  // Layout helpers
-  const UNIT = 24;
-
-  function getMasonryPlacement(index: number) {
-    // Bloques de 5 items (1 alto + 4 normales)
-    const block = Math.floor(index / 5);
-    const pos = index % 5;
-
-    const base = block * UNIT * 2;
-    const row1 = base + 1;
-    const row2 = base + 1 + UNIT;
-
-    const tallOnLeft = block % 2 === 0;
-
-    let col = 1;
-    let row = row1;
-    let span = UNIT;
-
-    if (tallOnLeft) {
-      if (pos === 0) {
-        col = 1;
-        row = row1;
-        span = UNIT * 2;
-      } else if (pos === 1) {
-        col = 2;
-        row = row1;
-        span = UNIT;
-      } else if (pos === 2) {
-        col = 3;
-        row = row1;
-        span = UNIT;
-      } else if (pos === 3) {
-        col = 2;
-        row = row2;
-        span = UNIT;
-      } else if (pos === 4) {
-        col = 3;
-        row = row2;
-        span = UNIT;
-      }
-    } else {
-      if (pos === 0) {
-        col = 1;
-        row = row1;
-        span = UNIT;
-      } else if (pos === 1) {
-        col = 2;
-        row = row1;
-        span = UNIT;
-      } else if (pos === 2) {
-        col = 3;
-        row = row1;
-        span = UNIT * 2;
-      } else if (pos === 3) {
-        col = 1;
-        row = row2;
-        span = UNIT;
-      } else if (pos === 4) {
-        col = 2;
-        row = row2;
-        span = UNIT;
-      }
+    // Sorting
+    const qTrim = query.trim();
+    if (sort === "relevance") {
+      result = [...result].sort((a, b) => scorePlace(b, qTrim) - scorePlace(a, qTrim));
+    } else if (sort === "popular") {
+      // “Popular” sin datos reales: usa score sin query para ser estable
+      result = [...result].sort((a, b) => scorePlace(b, "") - scorePlace(a, ""));
+    } else if (sort === "budget_low") {
+      result = [...result].sort((a, b) => budgetWeight(a.budget) - budgetWeight(b.budget));
+    } else if (sort === "duration_short") {
+      result = [...result].sort((a, b) => durationWeight(a.duration) - durationWeight(b.duration));
     }
 
-    return { col, row, span };
-  }
+    return result;
+  }, [q, category, duration, budget, quickPlan, quickPlans, sort]);
 
   return (
     <div className="pb-14">
-      {/* HERO full-bleed */}
+      {/* HERO */}
       <section className="full-bleed relative overflow-hidden">
         <AppImage
           src="images/museo-de-arte-tigre-3.jpg"
@@ -199,8 +214,7 @@ export default function QueHacer() {
               </h1>
 
               <p className="mx-auto mt-4 max-w-2xl text-base text-white/90 md:text-xl">
-                Elegí actividades según tu tiempo, presupuesto o compañía y armá tu día sin
-                improvisar.
+                Elegí actividades según tu tiempo, presupuesto o compañía y armá tu día sin improvisar.
               </p>
 
               <div className="mt-7 flex flex-wrap justify-center gap-3">
@@ -218,7 +232,7 @@ export default function QueHacer() {
 
       {/* CONTENIDO */}
       <div className="mx-auto max-w-6xl px-4 py-10">
-        {/* Aviso de llegada (Mitre) — minimal, no molesta */}
+        {/* Aviso de llegada */}
         <Card className="p-6">
           <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
@@ -235,29 +249,46 @@ export default function QueHacer() {
         </Card>
 
         {/* Planes rápidos */}
-        <div className="mt-6 flex flex-wrap gap-2">
-          {quickPlans.map((plan) => {
-            const active = quickPlan === plan.id;
+        <div className="mt-6">
+          <p className="text-lg text-slate-700">
+            Empezá por un plan rápido (un click) y después afiná con filtros.
+          </p>
 
-            return (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {quickPlans.map((plan) => {
+              const active = quickPlan === plan.id;
+
+              return (
+                <button
+                  key={plan.id}
+                  type="button"
+                  onClick={() => setQuickPlan((prev) => (prev === plan.id ? null : plan.id))}
+                  aria-pressed={active}
+                  className={[
+                    "rounded-full px-4 py-2 text-lg transition",
+                    "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
+                    active ? "bg-teal-900 text-white border-teal-900 hover:bg-teal-900" : "",
+                  ].join(" ")}
+                >
+                  {plan.label}
+                </button>
+              );
+            })}
+
+            {hasAnyFilter ? (
               <button
-                key={plan.id}
                 type="button"
-                onClick={() => setQuickPlan((prev) => (prev === plan.id ? null : plan.id))}
-                className={[
-                  "rounded-full px-4 py-2 text-lg transition",
-                  "border border-slate-200 bg-white text-slate-800 hover:bg-slate-50",
-                  active ? "bg-teal-900 text-white border-teal-900 hover:bg-teal-900" : "",
-                ].join(" ")}
+                onClick={clearAll}
+                className="rounded-full px-4 py-2 text-lg transition border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
               >
-                {plan.label}
+                ✕ Limpiar
               </button>
-            );
-          })}
+            ) : null}
+          </div>
         </div>
 
         {/* Filtros */}
-        <p className="mt-5 mb-3 text-lg text-slate-600">
+        <p className="mt-6 mb-3 text-lg text-slate-600">
           Tip: guardá lugares para armar tu itinerario ideal.
         </p>
 
@@ -272,37 +303,73 @@ export default function QueHacer() {
           setBudget={setBudget}
         />
 
-        {/* Grid */}
-        <div
-          className="
-            mt-6 grid gap-4
-            md:grid-cols-2
-            lg:grid-cols-3
-            lg:[auto-rows:10px]
-          "
-        >
-          {filtered.map((p, i) => {
-            const { col, row, span } = getMasonryPlacement(i);
+        {/* Barra resultados + sort */}
+        <div className="mt-5 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div className="text-lg text-slate-700">
+            <span className="font-semibold">{filtered.length}</span>{" "}
+            {filtered.length === 1 ? "resultado" : "resultados"}
+            {hasAnyFilter ? <span className="text-slate-500"> · con filtros</span> : null}
+          </div>
 
-            const style: MasonryVars = {
-              "--tt-col": col,
-              "--tt-row": row,
-              "--tt-span": span,
-            };
-
-            return (
-              <div key={p.slug} className="tt-masonry-item h-full" style={style}>
-                <PlaceCard place={p} />
-              </div>
-            );
-          })}
+          <div className="flex items-center gap-3">
+            <label className="text-lg text-slate-600" htmlFor="sort">
+              Ordenar:
+            </label>
+            <select
+              id="sort"
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortKey)}
+              className="rounded-2xl border border-slate-200 bg-white px-3 py-2 text-lg text-slate-800 shadow-sm"
+            >
+              <option value="relevance">Recomendados</option>
+              <option value="popular">Más populares</option>
+              <option value="budget_low">Más baratos primero</option>
+              <option value="duration_short">Más cortos primero</option>
+            </select>
+          </div>
         </div>
 
+        {/* Grid estable (sin huecos) */}
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((p) => (
+            <div key={p.slug} className="h-full">
+              <PlaceCard place={p} />
+            </div>
+          ))}
+        </div>
+
+        {/* Empty state */}
         {!filtered.length ? (
-          <p className="mt-8 rounded-2xl border bg-white/70 p-6 text-lg text-slate-700">
-            No se encontraron resultados. Probá con otra búsqueda o quitá filtros.
-          </p>
+          <div className="mt-8 rounded-3xl border border-slate-200 bg-white/80 p-8">
+            <h3 className="text-xl font-semibold tracking-tight text-slate-900">
+              No se encontraron resultados
+            </h3>
+            <p className="mt-2 text-lg text-slate-600">
+              Probá con otra búsqueda o quitá algún filtro.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              <Button onClick={clearAll}>Limpiar todo</Button>
+              <Link to="/itinerario">
+                <Button variant="ghost">Ver mi itinerario</Button>
+              </Link>
+            </div>
+          </div>
         ) : null}
+      </div>
+
+      {/* Sticky helper (desktop) */}
+      <div className="pointer-events-none fixed bottom-5 left-0 right-0 hidden md:block">
+        <div className="mx-auto max-w-6xl px-4">
+          <div className="pointer-events-auto flex items-center justify-between gap-4 rounded-3xl border border-slate-200 bg-white/90 px-5 py-4 shadow-sm backdrop-blur">
+            <div className="text-lg text-slate-700">
+              Guardá lugares y armá tu plan del día en{" "}
+              <span className="font-semibold">Mi itinerario</span>.
+            </div>
+            <Link to="/itinerario">
+              <Button>Ir al itinerario</Button>
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );
