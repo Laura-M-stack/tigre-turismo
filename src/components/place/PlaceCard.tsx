@@ -18,7 +18,7 @@ export default function PlaceCard({ place }: Props) {
     <article
       className={[
         "group relative overflow-hidden rounded-3xl border border-slate-200/70 bg-white shadow-sm",
-        // ✅ altura consistente en todas las pantallas
+        // Altura consistente en todas las pantallas
         // - mínimo: 320px
         // - máximo: 450px
         // - en el medio: escala con viewport

@@ -74,7 +74,6 @@ function scorePlace(p: Place, query: string) {
 }
 
 function durationWeight(d: Place["duration"]) {
-  // Ajustá si tu union tiene otros valores
   if (d === "medio-dia") return 2;
   if (d === "dia-completo") return 3;
   if (d === "1-2h") return 1;

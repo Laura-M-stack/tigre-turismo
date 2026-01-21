@@ -7,7 +7,7 @@ function joinBase(base: string) {
   // Si está en GH Pages con /tigre-turismo, origin no incluye el path.
   // Tomamos el href actual y recortamos hasta el "#", quedándonos con el base real.
   const href = typeof window !== "undefined" ? window.location.href : base;
-  const noHash = href.split("#")[0]; // e.g. https://user.github.io/tigre-turismo/
+  const noHash = href.split("#")[0];
   return noHash.endsWith("/") ? noHash.slice(0, -1) : noHash;
 }
 
