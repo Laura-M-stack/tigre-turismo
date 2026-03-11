@@ -78,10 +78,10 @@ export default function Home() {
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <h2 className="text-lg font-semibold text-slate-900">
-                  🚧 Aviso de verano: no te frenes por el tren
+                  🚧 Aviso: no te frenes por el tren
                 </h2>
                 <p className="mt-1 text-lg text-slate-700">
-                  Si el <b>Tren Mitre (Retiro–Tigre)</b> no está funcionando en enero/febrero, igual podés venir:
+                  Si el <b>Tren Mitre (Retiro–Tigre)</b> no está funcionando, o funciona con un recorrido reducido,igual podés venir:
                   <b> Tren de la Costa</b>, <b>colectivo</b> o <b>auto</b>.
                 </p>
                 <p className="mt-1 text-md text-slate-600">

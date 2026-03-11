@@ -5,7 +5,6 @@ import PlaceCard from "../components/place/PlaceCard";
 import PlaceFilters from "../components/place/PlaceFilters";
 import AppImage from "../components/ui/AppImage";
 import Button from "../components/ui/Button";
-import Card from "../components/ui/Card";
 import { places } from "../data/places";
 import { setSEO } from "../lib/seo";
 import type { Budget, Category, Duration, Place } from "../types/place";
@@ -230,12 +229,13 @@ export default function QueHacer() {
       </section>
 
       {/* CONTENIDO */}
-      <div className="mx-auto max-w-6xl px-4 py-10">
+      <div className="page-container">
         {/* Aviso de llegada */}
-        <Card className="p-6">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <section className="mt-8">
+          <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div>
-              <h2 className="text-lg font-semibold">🚧 Llegar en verano</h2>
+              <h2 className="text-lg font-semibold">🚧 Cómo legar mientras la linea Mitre se encuentra en mantenimiento</h2>
               <p className="mt-1 text-lg text-slate-600">
                 Si el <b>Tren Mitre</b> no está disponible, podés venir igual por{" "}
                 <b>Tren de la Costa</b>, colectivo o auto.
@@ -245,7 +245,8 @@ export default function QueHacer() {
               <Button>Ver opciones</Button>
             </Link>
           </div>
-        </Card>
+          </div>
+        </section>
 
         {/* Planes rápidos */}
         <div className="mt-6">

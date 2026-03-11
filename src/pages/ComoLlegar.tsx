@@ -75,10 +75,10 @@ export default function ComoLlegar() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold text-slate-900">
-                  🚧 Aviso importante (enero–febrero)
+                  🚧 Aviso importante
                 </h2>
                 <p className="mt-2 text-lg text-slate-700">
-                  Si pensabas venir en el <b>Tren Mitre (Retiro–Tigre)</b>, durante enero y febrero puede no estar disponible.
+                  Si pensabas venir en el <b>Tren Mitre (Retiro–Tigre)</b>, puede no estar disponible en todo su recorrido.
                   Para venir igual, te conviene elegir una de estas alternativas: <b>Tren de la Costa</b>, <b>colectivo</b> o <b>auto</b>.
                 </p>
                 <p className="mt-2 text-md text-slate-600">
@@ -87,7 +87,6 @@ export default function ComoLlegar() {
               </div>
 
               <div className="flex gap-2">
-                <Tag>Verano</Tag>
                 <Tag>Plan alternativo</Tag>
               </div>
             </div>
@@ -168,7 +167,7 @@ export default function ComoLlegar() {
                 <Tag>Revisar estado</Tag>
               </div>
               <p className="mt-2 text-lg text-slate-600">
-                Cuando funciona normal, es la forma más simple desde CABA. En verano, revisá el estado antes de salir.
+                Cuando funciona normal, es la forma más simple desde CABA. En estos meses, revisá el estado antes de salir.
               </p>
               <div className="mt-4">
                 <a href={INFO_MITRE} target="_blank" rel="noreferrer">
