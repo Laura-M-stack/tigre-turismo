@@ -1,0 +1,1 @@
+import{j as n}from"./motion-4lzZM1vH.js";function t(...r){return r.filter(Boolean).join(" ")}function e({children:r,className:o}){return n.jsx("div",{className:t(["rounded-2xl border border-slate-200/70","bg-white/90 backdrop-blur","shadow-sm transition-all duration-200","hover:shadow-md hover:-translate-y-0.5"].join(" "),o),children:r})}export{e as C};
