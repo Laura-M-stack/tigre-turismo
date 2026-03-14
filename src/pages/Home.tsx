@@ -30,7 +30,7 @@ export default function Home() {
       {/* HERO full-bleed */}
       <section id="top" className="full-bleed relative overflow-hidden">
         <AppImage
-          src="/images/tigre-hero.jpg"
+          src="images/tigre-hero.jpg"
           alt="Tigre, Buenos Aires"
           className="h-[62vh] w-full object-cover md:h-[72vh]"
           loading="eager"

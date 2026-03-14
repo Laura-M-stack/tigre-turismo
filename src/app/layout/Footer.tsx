@@ -152,7 +152,7 @@ export default function Footer() {
             Hecho con ❤ por{" "}
             <a
               className="font-semibold underline decoration-white/30 hover:decoration-white"
-              href="https://github.com/laura-m-stack"
+              href="https://www.linkedin.com/in/laura-moyano-h/"
               target="_blank"
               rel="noreferrer noopener"
             >

@@ -81,11 +81,11 @@ export default function Header() {
               <NavLink to="/que-hacer" className={linkClass}>
                 Qué hacer
               </NavLink>
-              <NavLink to="/itinerario" className={linkClass}>
-                Itinerario
-              </NavLink>
               <NavLink to="/como-llegar" className={linkClass}>
                 Cómo llegar
+              </NavLink>
+              <NavLink to="/itinerario" className={linkClass}>
+                Itinerario
               </NavLink>
             </nav>
 
