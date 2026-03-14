@@ -230,7 +230,7 @@ export default function QueHacer() {
 
       {/* CONTENIDO */}
       <div className="page-container">
-        {/* Aviso de llegada */}
+        {/* Aviso de llegada
         <section className="mt-8">
           <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -246,7 +246,7 @@ export default function QueHacer() {
             </Link>
           </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Planes rápidos */}
         <div className="mt-6">

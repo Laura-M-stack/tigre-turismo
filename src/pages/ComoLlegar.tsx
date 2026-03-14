@@ -14,7 +14,7 @@ const GMAPS_ESTACION_TIGRE =
   "https://www.google.com/maps/search/?api=1&query=Estaci%C3%B3n%20Tigre%2C%20Buenos%20Aires";
 
 const INFO_MITRE = "https://www.argentina.gob.ar/transporte/trenes-argentinos/areametropolitana/retiro-tigre";
-const INFO_COSTA = "https://www.trendelacosta.com.ar";
+// const INFO_COSTA = "https://www.trendelacosta.com.ar";
 
 export default function ComoLlegar() {
   useEffect(() => {
@@ -69,7 +69,7 @@ export default function ComoLlegar() {
       </section>
 
       <div className="page-container">
-        {/* ALERTA SERVICIO */}
+        {/* ALERTA SERVICIO
         <section className="mt-8">
           <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6">
             <div className="flex flex-wrap items-start justify-between gap-3">
@@ -100,7 +100,7 @@ export default function ComoLlegar() {
               </a>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Opciones */}
         <div className="mt-10 grid gap-5 lg:grid-cols-3">

@@ -30,7 +30,7 @@ export default function Home() {
       {/* HERO full-bleed */}
       <section id="top" className="full-bleed relative overflow-hidden">
         <AppImage
-          src="images/tigre-hero.jpg"
+          src="/images/tigre-hero.jpg"
           alt="Tigre, Buenos Aires"
           className="h-[62vh] w-full object-cover md:h-[72vh]"
           loading="eager"
@@ -72,7 +72,7 @@ export default function Home() {
 
       {/* CONTENIDO */}
       <div className="page-container">
-        {/* AVISO VERANO (Mitre) */}
+        {/* AVISO VERANO (Mitre)
         <section className="mt-8">
           <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6">
             <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
@@ -99,7 +99,7 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* IMPERDIBLES */}
         <div id="imperdibles" className="mt-10 flex items-end justify-between gap-4">
