@@ -1,0 +1,196 @@
+{
+  "hero-home": {
+    "local": "images/tigre-hero.jpg",
+    "author": "Laura Moyano",
+    "license": null,
+    "licenseUrl": null,
+    "alt": "Río Luján y el Delta en Tigre"
+  },
+  "hero-que-hacer": {
+    "file": "Delta del Tigre 2.jpg",
+    "author": "Javier Vidal from Madrid, Spain",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "hero-como-llegar": {
+    "file": "J30 597 Tigre, Bf Delta.jpg",
+    "author": "Falk2",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "estacion-fluvial": {
+    "file": "Estación Fluvial, Río Tigre, B.jpg",
+    "author": "Roberto Fiadone",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "puerto-de-frutos": {
+    "file": "Puerto de frutos.JPG",
+    "author": "Aleposta",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "puerto-de-frutos-2": {
+    "file": "J34 889 Puerto de Frutos.jpg",
+    "author": "Falk2",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "paseo-victorica": {
+    "file": "Paseo Victorica - Tigre - panoramio.jpg",
+    "author": "bullit",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "paseo-victorica-2": {
+    "file": "Paseo Victorica - Tigre - panoramio (1).jpg",
+    "author": "bullit",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "paseo-victorica-3": {
+    "file": "Paseo Victorica - Tigre - panoramio (2).jpg",
+    "author": "bullit",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "parque-de-la-costa": {
+    "file": "Montañas rusas en el Parque de la Costa.jpg",
+    "author": "Dario Alpern",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "parque-de-la-costa-2": {
+    "file": "Parque de la Costa y Río Luján.jpg",
+    "author": "Dario Alpern",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "parque-de-la-costa-3": {
+    "file": "Fuente del Parque de la Costa y desembocadura en el río Tigre.jpg",
+    "author": "Dario Alpern",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "museo-de-arte-tigre": {
+    "file": "Museo de Arte de Tigre 01.JPG",
+    "author": "Marcelo Ois Lagarde",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "museo-de-arte-tigre-2": {
+    "file": "Escaleras del Museo de Arte Tigre.jpg",
+    "author": "Dario Alpern",
+    "license": "CC BY-SA 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/3.0"
+  },
+  "museo-de-arte-tigre-3": {
+    "file": "Museo de Arte - panoramio (1).jpg",
+    "author": "Aleksandrs Timofejev",
+    "license": "CC BY 3.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/3.0"
+  },
+  "museo-de-la-reconquista": {
+    "category": "Museo de la Reconquista",
+    "file": "Museo de la Reconquista 01.jpg",
+    "author": "Roberto Fiadone",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "museo-naval": {
+    "file": "Fachada del museo en Tigre.jpg",
+    "author": "Carlos Stadler",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "museo-naval-2": {
+    "file": "Museo Naval de la Nación Argentina, Tigre.jpg",
+    "author": "Roberto Fiadone",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "museo-naval-3": {
+    "file": "Galeón Vasa, maqueta, Aldo Persano.jpg",
+    "author": "Roberto Fiadone",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "casa-museo-sarmiento": {
+    "file": "Casa Museo Sarmiento - Tigre, Buenos Aires Province - Argentina - 9 Sept. 2014.jpg",
+    "author": "Niels Mickers from The Netherlands",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "casa-museo-sarmiento-2": {
+    "file": "Escritorio de Sarmiento en la Casa del Delta.jpg",
+    "author": "MinervaAustral",
+    "license": "CC BY 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/4.0"
+  },
+  "paseo-en-lancha": {
+    "file": "Lancha Colectiva del Delta del Paraná.jpg",
+    "author": "zanaguara (Flickr)",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "paseo-en-lancha-2": {
+    "file": "Delta del Tigre 1.jpg",
+    "author": "Javier Vidal from Madrid, Spain",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "paseo-en-lancha-3": {
+    "file": "Arroyo Santa Rosa, Delta del Tigre, Buenos Aires, Argentina.jpg",
+    "author": "Vlasta x",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "clubes-de-remo": {
+    "file": "Club de Regatas La Marina 01.jpg",
+    "author": "longhorndave (David)",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "clubes-de-remo-2": {
+    "file": "Tigre Boat Club.jpg",
+    "author": "Rcidte",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "clubes-de-remo-3": {
+    "file": "Buenos Aires Rowing Club ramp.jpg",
+    "author": "ericyeargan (Flickr)",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "casino-trilenium": {
+    "file": "Casino Trillenium.jpg",
+    "author": "Rcidte",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "paseo-en-catamaran": {
+    "file": "Lanchas colectivo y catamaranes en río Tigre.JPG",
+    "author": "Loctus31",
+    "license": "Public domain",
+    "licenseUrl": null
+  },
+  "paseo-en-catamaran-2": {
+    "file": "Lancha colectiva y catamarán.jpg",
+    "author": "jorgebrazil (Flickr)",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  },
+  "rincon-de-milberg": {
+    "file": "Canal aliviador en proyecto Reserva Natural Rincón de Milberg, Tigre, provincia de Buenos Aires, Argentina.jpg",
+    "author": "Roberto Goldschmidt",
+    "license": "CC BY-SA 4.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by-sa/4.0"
+  },
+  "kayak": {
+    "file": "Kayaking on the Tigre (4514249842).jpg",
+    "author": "Alex Proimos from Sydney, Australia",
+    "license": "CC BY 2.0",
+    "licenseUrl": "https://creativecommons.org/licenses/by/2.0"
+  }
+}

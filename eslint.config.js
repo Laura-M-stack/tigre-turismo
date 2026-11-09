@@ -14,6 +14,12 @@ export default [
   js.configs.recommended,
   ...tseslint.configs.recommended,
 
+  // Scripts de Node (ej: scripts/commons-credits.mjs)
+  {
+    files: ["scripts/**/*.{js,mjs}"],
+    languageOptions: { globals: globals.node },
+  },
+
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {

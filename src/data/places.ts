@@ -50,12 +50,7 @@ export const places: Place[] = [
     lat: -34.419979,
     lng: -58.573243, 
     locationType: "entrance",
-    coverImage: "images/puerto-de-frutos.jpg",
-    gallery: [
-      "images/puerto-de-frutos.jpg",
-      "images/puerto-de-frutos-2.jpg",
-      "images/puerto-de-frutos-3.jpg",
-    ],
+    photos: ["puerto-de-frutos", "puerto-de-frutos-2"],
   },
   {
     slug: "paseo-victorica",
@@ -101,12 +96,7 @@ export const places: Place[] = [
     lat: -34.41548290034034,
     lng: -58.5802918982336,
     locationType: "area",
-    coverImage: "images/paseo-victorica.jpg",
-    gallery: [
-      "images/paseo-victorica.jpg",
-      "images/paseo-victorica-2.jpg",
-      "images/paseo-victorica-3.jpg",
-    ],
+    photos: ["paseo-victorica", "paseo-victorica-2", "paseo-victorica-3"],
   },
 
   // =========================
@@ -156,12 +146,7 @@ export const places: Place[] = [
     lat: -34.418089,
     lng: -58.576747,    
     locationType: "entrance",
-    coverImage: "images/parque-de-la-costa.jpg",
-    gallery: [
-      "images/parque-de-la-costa.jpg",
-      "images/parque-de-la-costa-2.jpg",
-      "images/parque-de-la-costa-3.webp",
-    ],
+    photos: ["parque-de-la-costa", "parque-de-la-costa-2", "parque-de-la-costa-3"],
   },
 
   // =========================
@@ -213,12 +198,7 @@ export const places: Place[] = [
     lat: -34.410008260161725,
     lng: -58.590931258448386,
     locationType: "entrance",
-    coverImage: "images/museo-de-arte-tigre.jpg",
-    gallery: [
-      "images/museo-de-arte-tigre.jpg",
-      "images/museo-de-arte-tigre-2.jpg",
-      "images/museo-de-arte-tigre-3.jpg",
-    ],
+    photos: ["museo-de-arte-tigre", "museo-de-arte-tigre-2", "museo-de-arte-tigre-3"],
   },
   {
     slug: "museo-de-la-reconquista",
@@ -264,12 +244,7 @@ export const places: Place[] = [
     lat: -34.41652819098896,
     lng: -58.58981901317976,
     locationType: "entrance",
-    coverImage: "images/museo-de-la-reconquista.jpg",
-    gallery: [
-      "images/museo-de-la-reconquista.jpg",
-      "images/museo-de-la-reconquista-2.jpg",
-      "images/museo-de-la-reconquista-3.jpg",
-    ],
+    photos: ["museo-de-la-reconquista"],
   },
   {
     slug: "museo-naval",
@@ -314,12 +289,7 @@ export const places: Place[] = [
     lat: -34.41281348734376,
     lng: -58.58620619256667,
     locationType: "entrance",
-    coverImage: "images/museo-naval.jpg",
-    gallery: [
-      "images/museo-naval.jpg",
-      "images/museo-naval-2.jpg",
-      "images/museo-naval-3.jpg",
-    ],
+    photos: ["museo-naval", "museo-naval-2", "museo-naval-3"],
   },
   {
     slug: "casa-museo-sarmiento",
@@ -358,12 +328,7 @@ export const places: Place[] = [
     lng: -58.57676615396876,
     tags: ["cultura", "gratis", "historia"],
     locationType: "area",
-    coverImage: "images/museo-sarmiento.jpg",
-    gallery: [
-      "images/museo-sarmiento.jpg",
-      "images/museo-sarmiento-2.jpg",
-      "images/museo-sarmiento-3.jpg",
-    ],
+    photos: ["casa-museo-sarmiento", "casa-museo-sarmiento-2"],
   },
 
   // =========================
@@ -414,15 +379,7 @@ export const places: Place[] = [
     lat: -34.42168655323427,
     lng: -58.579740653969885,
     locationType: "area",
-    coverImage: "images/paseo-en-lancha.jpg",
-    gallery: [
-      "images/paseo-en-lancha.jpg",
-      "images/paseo-en-lancha-1.jpg",
-      "images/paseo-en-lancha-2.jpg",
-      "images/paseo-en-lancha-3.jpg",
-      "images/paseo-en-lancha-4.jpg",
-      "images/paseo-en-lancha-5.jpg",
-    ],
+    photos: ["paseo-en-lancha", "paseo-en-lancha-2", "paseo-en-lancha-3"],
   },
 
   // =========================
@@ -469,12 +426,7 @@ export const places: Place[] = [
     ],
     tags: ["paseo", "gratis", "fotos"],
     locationType: "area",
-    coverImage: "images/clubes-de-remo.jpg",
-    gallery: [
-      "images/clubes-de-remo.jpg",
-      "images/clubes-de-remo-2.jpg",
-      "images/clubes-de-remo-3.jpg",
-    ],
+    photos: ["clubes-de-remo", "clubes-de-remo-2", "clubes-de-remo-3"],
   },
 
   // =========================
@@ -517,12 +469,7 @@ export const places: Place[] = [
     lat: -34.41822505387873,
     lng: -58.5763887612272,
     locationType: "entrance",
-    coverImage: "images/teatro-nini-marshall.jpg",
-    gallery: [
-      "images/teatro-nini-marshall.jpg",
-      "images/teatro-nini-marshall-2.jpg",
-      "images/teatro-nini-marshall-3.jpg",
-    ],
+    photos: [],
   },
 
   {
@@ -562,12 +509,7 @@ export const places: Place[] = [
     lat: -34.41869061454813,
     lng: -58.575102487713565,
     locationType: "entrance",
-    coverImage: "images/casino-trilenium.png",
-    gallery: [
-      "images/casino-trilenium.png",
-      "images/casino-trilenium-2.png",
-      "images/casino-trilenium-3.png",
-    ],
+    photos: ["casino-trilenium"],
   },
 
   // =========================
@@ -617,12 +559,7 @@ export const places: Place[] = [
     lat: -34.418347474072895,
     lng: -58.57228375562449,
     locationType: "entrance",
-    coverImage: "images/paseo-en-catamaran.jpg",
-    gallery: [
-      "images/paseo-en-catamaran.jpg",
-      "images/paseo-en-catamaran-2.jpeg",
-      "images/paseo-en-catamaran-3.jpg",
-    ],
+    photos: ["paseo-en-catamaran", "paseo-en-catamaran-2"],
   },
 
   // =========================
@@ -672,12 +609,7 @@ export const places: Place[] = [
     lat: -34.39362982775495,
     lng: -58.62167719444537,
     locationType: "area",
-    coverImage: "images/reserva-rincon.jpeg",
-    gallery: [
-      "images/reserva-rincon.jpeg",
-      "images/reserva-rincon-2.jpg",
-      "images/reserva-rincon-3.jpg",
-    ],
+    photos: ["rincon-de-milberg"],
   },
 
   {
@@ -723,12 +655,7 @@ export const places: Place[] = [
     lng: -58.57920521576997,
     tags: ["naturaleza", "tranquilo"],
     locationType: "area",
-    coverImage: "images/delta-terra.jpg",
-    gallery: [
-      "images/delta-terra.jpg",
-      "images/delta-terra-2.jpg",
-      "images/delta-terra-3.jpg",
-    ],
+    photos: [],
   },
 
   // =========================
@@ -777,12 +704,7 @@ export const places: Place[] = [
     lat: -34.38367587815925,
     lng: -58.68381044841415,
     locationType: "area",
-    coverImage: "images/euca-tigre.webp",
-    gallery: [
-      "images/euca-tigre.webp",
-      "images/euca-tigre-2.webp",
-      "images/euca-tigre-3.jpg",
-    ],
+    photos: [],
   },
 
   {
@@ -822,12 +744,7 @@ export const places: Place[] = [
     lat: -34.40447367458574,
     lng: -58.571863964959086,
     locationType: "area",
-    coverImage: "images/kayak-delta.jpg",
-    gallery: [
-      "images/kayak-delta.jpg",
-      "images/kayak-delta-2.jpg",
-      "images/kayak-delta-3.jpg",
-    ],
+    photos: ["kayak"],
   },
 
   // =========================
@@ -875,12 +792,7 @@ export const places: Place[] = [
     zone: "Paseo Victorica",
     tags: ["comida", "pareja", "relax"],
     locationType: "area",
-    coverImage: "images/restaurante.webp",
-    gallery: [
-      "images/restaurante.webp",
-      "images/restaurante-2.webp",
-      "images/restaurante-3.webp",
-    ],
+    photos: [],
   },
 
   {
@@ -925,7 +837,6 @@ export const places: Place[] = [
     ],
     tags: ["relax", "pareja", "tranquilo"],
     locationType: "area",
-    coverImage: "images/spa.jpg",
-    gallery: ["images/spa.jpg", "images/spa-2.jpeg", "images/spa-3.webp"],
+    photos: [],
   },
 ];

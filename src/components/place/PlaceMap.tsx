@@ -1,168 +1,156 @@
 import L from "leaflet";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { CircleMarker, MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
+import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 import { Link } from "react-router-dom";
 
 import "leaflet/dist/leaflet.css";
-import { defaultIcon } from "../../lib/leafletIcon";
+import { LOCATION_LABEL } from "../../lib/labels";
 import { googleMapsDirectionsUrl } from "../../lib/maps";
 import type { Place } from "../../types/place";
 
-type Props = {
+export type PlaceMapProps = {
   places: Place[];
-  height?: number;
+  /** Alto en px; en pantallas grandes se puede pasar "fill" para ocupar el contenedor. */
+  height?: number | "fill";
   showDetailLink?: boolean;
+  /** Numera los marcadores según el orden de `places` (coincide con la lista). */
+  numbered?: boolean;
+  activeSlug?: string | null;
+  onActivate?: (slug: string | null) => void;
+  className?: string;
 };
 
-function FitBounds({ bounds }: { bounds: L.LatLngBounds }) {
-  const map = useMap();
+const IN_VIEW_OPTIONS: IntersectionObserverInit = { rootMargin: "300px 0px", threshold: 0.01 };
 
-  useEffect(() => {
-    map.fitBounds(bounds, { padding: [24, 24] });
-  }, [map, bounds]);
-
-  return null;
-}
-
-function useInView<T extends HTMLElement>(options?: IntersectionObserverInit) {
+function useInView<T extends HTMLElement>() {
   const ref = useRef<T | null>(null);
-  const [inView, setInView] = useState(false);
+  // Sin IntersectionObserver (navegadores muy viejos) se muestra el mapa directamente
+  const [inView, setInView] = useState(() => typeof IntersectionObserver === "undefined");
 
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
-
+    if (!el || inView) return;
     const obs = new IntersectionObserver((entries) => {
-      const entry = entries[0];
-      if (entry?.isIntersecting) {
+      if (entries[0]?.isIntersecting) {
         setInView(true);
         obs.disconnect();
       }
-    }, options);
-
+    }, IN_VIEW_OPTIONS);
     obs.observe(el);
     return () => obs.disconnect();
-  }, [options]);
+  }, [inView]);
 
   return { ref, inView };
 }
 
-function heightClass(height: number) {
-  const allowed = new Map<number, string>([
-    [240, "h-[240px]"],
-    [280, "h-[280px]"],
-    [300, "h-[300px]"],
-    [320, "h-[320px]"],
-    [360, "h-[360px]"],
-    [400, "h-[400px]"],
-    [480, "h-[480px]"],
-  ]);
+function FitBounds({ points }: { points: [number, number][] }) {
+  const map = useMap();
+  const key = points.map((p) => p.join(",")).join("|");
 
-  return allowed.get(height) ?? "h-[320px]";
+  useEffect(() => {
+    if (!points.length) return;
+    if (points.length === 1) map.setView(points[0], 15);
+    else map.fitBounds(L.latLngBounds(points), { padding: [32, 32], maxZoom: 15 });
+    // `key` resume `points`: evita re-encuadrar cuando solo cambia la referencia del array
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [map, key]);
+
+  return null;
 }
 
-export default function PlaceMap({ places, height = 320, showDetailLink = true }: Props) {
-  const { ref, inView } = useInView<HTMLDivElement>({
-    root: null,
-    rootMargin: "300px 0px",
-    threshold: 0.01,
+function pinIcon(label: string, { area, active }: { area: boolean; active: boolean }) {
+  return L.divIcon({
+    className: "",
+    html: `<div class="map-pin${area ? " map-pin--area" : ""}${active ? " map-pin--active" : ""}"><span>${label}</span></div>`,
+    iconSize: [30, 30],
+    iconAnchor: [15, 30],
+    popupAnchor: [0, -28],
   });
+}
+
+export default function PlaceMap({
+  places,
+  height = 360,
+  showDetailLink = true,
+  numbered = true,
+  activeSlug = null,
+  onActivate,
+  className = "",
+}: PlaceMapProps) {
+  const { ref, inView } = useInView<HTMLDivElement>();
 
   const withCoords = useMemo(
-    () => places.filter((p) => typeof p.lat === "number" && typeof p.lng === "number"),
+    () =>
+      places
+        .map((p, i) => ({ p, n: i + 1 }))
+        .filter(({ p }) => Number.isFinite(p.lat) && Number.isFinite(p.lng)),
     [places],
   );
+  const points = useMemo(
+    () => withCoords.map(({ p }) => [p.lat!, p.lng!] as [number, number]),
+    [withCoords],
+  );
 
-  const bounds = useMemo(() => {
-    if (!withCoords.length) return null;
-    return L.latLngBounds(withCoords.map((p) => [p.lat!, p.lng!] as [number, number]));
-  }, [withCoords]);
+  const style = height === "fill" ? undefined : { height };
+  const sizeClass = height === "fill" ? "h-full min-h-[320px]" : "";
 
   if (!withCoords.length) {
     return (
-      <div className="rounded-2xl border bg-slate-50 p-6 text-base text-slate-600">
-        No hay coordenadas para mostrar el mapa.
+      <div className={`grid place-items-center rounded-2xl bg-cream-200 p-6 text-ink-soft ${sizeClass} ${className}`} style={style}>
+        No hay ubicaciones para mostrar.
       </div>
     );
   }
 
-  const initialCenter: [number, number] = [-34.41, -58.58];
-  const hClass = heightClass(height);
-
   return (
     <div
       ref={ref}
-      className="group overflow-hidden rounded-2xl bg-white shadow-sm ring-1 ring-black/5 transition hover:-translate-y-0.5 hover:shadow-md"
+      className={`overflow-hidden rounded-2xl ring-1 ring-ink/10 ${sizeClass} ${className}`}
+      style={style}
     >
       {!inView ? (
-        <div
-          className={`flex items-center justify-center bg-slate-50 ${hClass}`}
-          aria-label="Mapa (cargando)"
-        >
-          <div className="rounded-2xl border border-slate-200 bg-white/70 px-4 py-3 text-base text-slate-700 shadow-sm">
-            Cargando mapa…
-          </div>
+        <div className="grid h-full place-items-center bg-cream-200 text-sm text-ink-soft" role="status">
+          Cargando mapa…
         </div>
       ) : (
-        <div className={hClass}>
-          <MapContainer
-            center={initialCenter}
-            zoom={13}
-            scrollWheelZoom={false}
-            className="h-full w-full"
-          >
-            <TileLayer
-              attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a>'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
+        <MapContainer center={points[0]} zoom={14} scrollWheelZoom={false} className="h-full w-full">
+          <TileLayer
+            attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          />
+          <FitBounds points={points} />
 
-            {bounds ? <FitBounds bounds={bounds} /> : null}
-
-            {withCoords.map((place) => {
-              const pos: [number, number] = [place.lat!, place.lng!];
-              const isArea = place.locationType === "area";
-
-              const popupContent = (
-                <div className="space-y-1">
-                  <div className="font-semibold">{place.name}</div>
-
-                  {place.locationType ? (
-                    <div className="text-base text-slate-600">
-                      {place.locationType === "entrance"
-                        ? "Acceso principal"
-                        : "Zona aproximada"}
-                    </div>
-                  ) : null}
-
-                  {showDetailLink ? (
-                    <Link to={`/lugares/${place.slug}`} className="text-base underline">
-                      Ver detalle
-                    </Link>
-                  ) : null}
-
-                  <a
-                    href={googleMapsDirectionsUrl(place.lat!, place.lng!)}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="text-base underline"
-                  >
-                    Cómo llegar
-                  </a>
+          {withCoords.map(({ p, n }) => (
+            <Marker
+              key={p.slug}
+              position={[p.lat!, p.lng!]}
+              icon={pinIcon(numbered ? String(n) : "", {
+                area: p.locationType === "area",
+                active: activeSlug === p.slug,
+              })}
+              zIndexOffset={activeSlug === p.slug ? 1000 : 0}
+              title={p.name}
+              alt={numbered ? `${n}. ${p.name}` : p.name}
+              eventHandlers={{
+                mouseover: () => onActivate?.(p.slug),
+                mouseout: () => onActivate?.(null),
+              }}
+            >
+              <Popup>
+                <div className="space-y-1 text-sm">
+                  <div className="font-semibold">{p.name}</div>
+                  {p.locationType ? <div className="text-ink-soft">{LOCATION_LABEL[p.locationType]}</div> : null}
+                  <div className="flex gap-3 pt-1">
+                    {showDetailLink ? <Link to={`/lugares/${p.slug}`}>Ver detalle</Link> : null}
+                    <a href={googleMapsDirectionsUrl(p.lat!, p.lng!)} target="_blank" rel="noopener noreferrer">
+                      Cómo llegar
+                    </a>
+                  </div>
                 </div>
-              );
-
-              return isArea ? (
-                <CircleMarker key={place.slug} center={pos} radius={12}>
-                  <Popup>{popupContent}</Popup>
-                </CircleMarker>
-              ) : (
-                <Marker key={place.slug} position={pos} icon={defaultIcon}>
-                  <Popup>{popupContent}</Popup>
-                </Marker>
-              );
-            })}
-          </MapContainer>
-        </div>
+              </Popup>
+            </Marker>
+          ))}
+        </MapContainer>
       )}
     </div>
   );

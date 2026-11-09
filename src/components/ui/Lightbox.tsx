@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef } from "react";
 
-import AppImage from "./AppImage";
+import type { Photo } from "../../lib/photos";
 
-type Item = { src: string; alt?: string };
+import { PhotoCredit } from "./Photo";
+
+type Item = { photo: Photo; alt: string };
 
 type Props = {
   items: Item[];
@@ -28,13 +30,13 @@ export default function Lightbox({ items, index, onClose, onPrev, onNext }: Prop
   const prevSrc = useMemo(() => {
     if (!len) return null;
     const i = (safeIndex - 1 + len) % len;
-    return items[i]?.src ?? null;
+    return items[i]?.photo.src ?? null;
   }, [items, safeIndex, len]);
 
   const nextSrc = useMemo(() => {
     if (!len) return null;
     const i = (safeIndex + 1) % len;
-    return items[i]?.src ?? null;
+    return items[i]?.photo.src ?? null;
   }, [items, safeIndex, len]);
 
   // lock scroll + teclado + focus trap básico
@@ -168,23 +170,27 @@ export default function Lightbox({ items, index, onClose, onPrev, onNext }: Prop
         className="relative w-full max-w-5xl overflow-hidden rounded-2xl bg-black select-none"
         onMouseDown={(e) => e.stopPropagation()}
       >
-        <AppImage
-          src={current.src}
-          alt={current.alt ?? "Imagen"}
+        <img
+          src={current.photo.src}
+          srcSet={current.photo.srcSet}
+          sizes="(min-width: 1024px) 1024px, 100vw"
+          alt={current.alt}
+          referrerPolicy="no-referrer"
           className="max-h-[78vh] w-full object-contain"
-          loading="eager"
           decoding="async"
-          fetchPriority="high"
         />
+        <p className="bg-black px-4 py-2 text-xs text-white/80">
+          <PhotoCredit photo={current.photo} />
+        </p>
 
         <button
           ref={closeBtnRef}
           type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 rounded-xl bg-white/90 px-3 py-2 text-md font-medium text-slate-900 shadow hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+          className="absolute right-3 top-3 rounded-xl bg-white/90 px-3 py-2 text-sm font-medium text-ink shadow hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
           aria-label="Cerrar"
         >
-          Cerrar ✕
+          Cerrar
         </button>
 
         {len > 1 ? (
@@ -192,7 +198,7 @@ export default function Lightbox({ items, index, onClose, onPrev, onNext }: Prop
             <button
               type="button"
               onClick={onPrev}
-              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-xl bg-white/90 px-3 py-2 text-md font-medium text-slate-900 shadow hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              className="absolute left-3 top-1/2 -translate-y-1/2 rounded-xl bg-white/90 px-3 py-2 text-sm font-medium text-ink shadow hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               aria-label="Anterior"
             >
               ←
@@ -201,13 +207,13 @@ export default function Lightbox({ items, index, onClose, onPrev, onNext }: Prop
             <button
               type="button"
               onClick={onNext}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl bg-white/90 px-3 py-2 text-md font-medium text-slate-900 shadow hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-xl bg-white/90 px-3 py-2 text-sm font-medium text-ink shadow hover:bg-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
               aria-label="Siguiente"
             >
               →
             </button>
 
-            <div className="absolute bottom-3 left-1/2 -translate-x-1/2 rounded-xl bg-white/90 px-3 py-1 text-md font-medium text-slate-900">
+            <div className="absolute bottom-12 left-1/2 -translate-x-1/2 rounded-xl bg-white/90 px-3 py-1 text-sm font-medium text-ink">
               {safeIndex + 1} / {len}
             </div>
           </>

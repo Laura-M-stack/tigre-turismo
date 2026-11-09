@@ -1,99 +1,111 @@
 @import "tailwindcss";
 
-/* Look & feel general (tipo travel app) */
-:root {
-  color-scheme: light;
+/* ===== Tokens (dirección A: crema cálida, verde río, ladrillo) ===== */
+@theme {
+  --color-cream-50: #fdfbf7;
+  --color-cream-100: #faf6ef;
+  --color-cream-200: #f1e9dc;
+  --color-cream-300: #e4d7c3;
+
+  --color-river-50: #eef4f2;
+  --color-river-100: #d6e5e0;
+  --color-river-500: #3b7a6c;
+  --color-river-700: #2a5f54;
+  --color-river-800: #1f4d45;
+  --color-river-900: #163a34;
+
+  --color-brick-50: #fbefe9;
+  --color-brick-500: #c8653b;
+  --color-brick-600: #b5532a;
+  --color-brick-700: #964322;
+
+  --color-ink: #1d2422;
+  --color-ink-soft: #4a5552;
+
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
 }
 
 @layer base {
-  html {
-    scroll-behavior: smooth;
-    font-size: 16px;
+  :root {
+    color-scheme: light;
   }
 
-  /* Respeta accesibilidad */
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
     }
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+    }
   }
 
   body {
-    min-height: 100vh;
-    /* slate-900 (evita depender de theme() en CSS) */
-    color: #0f172a;
-    background:
-      radial-gradient(
-        1200px 600px at 85% -10%,
-        rgba(56, 189, 248, 0.22),
-        transparent 60%
-      ),
-      radial-gradient(900px 520px at 10% 0%, rgba(167, 139, 250, 0.2), transparent 55%),
-      linear-gradient(to bottom, #f8fafc, #f1f5f9);
+    @apply bg-cream-100 font-sans text-ink antialiased;
   }
 
-  /* Evita que Leaflet “pise” cosas raras arriba del header */
-  .leaflet-container {
-    z-index: 0;
-  }
-
-  /* Defaults tipográficos suaves (las clases del componente mandan) */
   h1,
-  h2 {
-    @apply tracking-tight;
-  }
-  h3,
-  h4,
-  h5,
-  h6 {
-    @apply font-semibold;
+  h2,
+  h3 {
+    @apply font-display text-ink;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
   }
 
   p {
-    @apply leading-relaxed;
+    text-wrap: pretty;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brick-600);
+    outline-offset: 2px;
+  }
+
+  .leaflet-container {
+    z-index: 0;
+    font-family: var(--font-sans);
   }
 }
 
-/* Helpers */
 @layer utilities {
   .page-container {
-    @apply mx-auto max-w-6xl px-4;
-  }
-
-  /* Full-bleed: ocupa todo el viewport aunque el contenido esté centrado */
-  .full-bleed {
-    @apply relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen;
+    @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
   }
 }
 
-/* Si querés usarlo en vez de repetir h-[62vh] etc, dejalo.
-   Si no lo usás, podés borrarlo sin problema. */
-.hero-h {
-  height: 62vh;
+/* ===== Marcadores numerados del mapa ===== */
+.map-pin {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9999px 9999px 9999px 2px;
+  transform: rotate(-45deg);
+  background: var(--color-river-800);
+  border: 2px solid #fff;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 0.25);
+  transition:
+    transform 150ms ease,
+    background-color 150ms ease;
 }
-@media (min-width: 768px) {
-  .hero-h {
-    height: 72vh;
-  }
+.map-pin > span {
+  transform: rotate(45deg);
+  color: #fff;
+  font: 600 13px/1 var(--font-sans);
 }
-@media (min-width: 1024px) {
-  .hero-h {
-    height: 82vh;
-  }
+.map-pin--area {
+  background: var(--color-river-500);
+  border-style: dashed;
 }
-
-/* Titulares escalables */
-h1 {
-  font-size: clamp(2.2rem, 5vw, 3.2rem);
-}
-h2 {
-  font-size: clamp(1.6rem, 3vw, 2rem);
-}
-h3 {
-  font-size: 1.4rem;
-}
-
-/* Prose helper (si lo usás en detalle) */
-.prose p {
-  @apply text-base leading-7;
+.map-pin--active {
+  background: var(--color-brick-600);
+  transform: rotate(-45deg) scale(1.2);
 }

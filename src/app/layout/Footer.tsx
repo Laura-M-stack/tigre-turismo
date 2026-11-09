@@ -1,165 +1,80 @@
-import { useEffect, useMemo, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
-function scrollToTop() {
-  window.scrollTo({ top: 0, behavior: "smooth" });
-}
-
-async function copyToClipboard(text: string) {
-  if (navigator.clipboard?.writeText) {
-    await navigator.clipboard.writeText(text);
-    return;
-  }
-  const ta = document.createElement("textarea");
-  ta.value = text;
-  ta.style.position = "fixed";
-  ta.style.left = "-9999px";
-  ta.style.top = "-9999px";
-  document.body.appendChild(ta);
-  ta.select();
-  document.execCommand("copy");
-  document.body.removeChild(ta);
-}
+import Icon from "../../components/ui/Icon";
+import { copyText } from "../../lib/clipboard";
 
 export default function Footer() {
-  const currentUrl = useMemo(() => {
-    if (typeof window === "undefined") return "";
-    return window.location.href;
-  }, []);
+  const [copied, setCopied] = useState(false);
+  const year = new Date().getFullYear();
 
-  const [feedback, setFeedback] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!feedback) return;
-    const t = window.setTimeout(() => setFeedback(null), 2400);
-    return () => window.clearTimeout(t);
-  }, [feedback]);
-
-  const onShare = async () => {
-    try {
-      if (navigator.share) {
-        await navigator.share({
-          title: "Tigre Turismo",
-          text: "Guía práctica para recorrer Tigre: lugares, itinerario y cómo llegar.",
-          url: currentUrl,
-        });
-        setFeedback("Compartido ✅");
-        return;
-      }
-
-      await copyToClipboard(currentUrl);
-      setFeedback("Link copiado ✅");
-    } catch {
+  const share = async () => {
+    const url = window.location.href;
+    if (navigator.share) {
       try {
-        await copyToClipboard(currentUrl);
-        setFeedback("Link copiado ✅");
+        await navigator.share({ title: "Tigre Turismo", url });
+        return;
       } catch {
-        setFeedback("No pude copiar el link. Copialo desde la barra del navegador.");
+        /* el usuario canceló: probamos copiar */
       }
+    }
+    if (await copyText(url)) {
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 1800);
     }
   };
 
   return (
-    <footer className="mt-20 border-t border-slate-200 bg-teal-900">
-      <div className="mx-auto max-w-6xl px-4 py-10">
-        {/* TOP */}
-        <div className="grid gap-8 md:grid-cols-12 md:gap-10 items-start">
-          {/* BRAND (5) */}
-          <div className="md:col-span-4">
-            <div className="text-xl font-semibold text-white">Tigre Turismo</div>
-
-            <p className="mt-3 max-w-md text-base text-slate-50 leading-relaxed">
-              Guía práctica para recorrer Tigre.
-              <br />
-              Armá tu itinerario, descubrí lugares imperdibles y movete sin perder tiempo.
-            </p>
-
-            <div className="mt-4 flex flex-wrap gap-2">
-              <button
-                type="button"
-                onClick={scrollToTop}
-                className="rounded-xl bg-white/10 px-4 py-2 text-base text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
-              >
-                ↑ Volver arriba
-              </button>
-
-              <button
-                type="button"
-                onClick={() => void onShare()}
-                className="rounded-xl bg-white/10 px-4 py-2 text-base text-white backdrop-blur transition hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30"
-              >
-                🔗 Compartir
-              </button>
-            </div>
-
-            {/* feedback no intrusivo */}
-            <div className="mt-3 min-h-[1.25rem]" aria-live="polite">
-              {feedback ? <span className="text-base text-teal-50/90">{feedback}</span> : null}
-            </div>
-          </div>
-
-          {/* NAV (3) */}
-          <div className="md:col-span-3">
-            <h4 className="mb-3 text-lg font-semibold text-teal-50">Explorar</h4>
-
-            <ul className="space-y-2 text-base">
-              <li>
-                <Link className="text-white/90 hover:text-white hover:underline" to="/">
-                  Inicio
-                </Link>
-              </li>
-              <li>
-                <Link className="text-white/90 hover:text-white hover:underline" to="/que-hacer">
-                  Qué hacer
-                </Link>
-              </li>
-              <li>
-                <Link className="text-white/90 hover:text-white hover:underline" to="/itinerario">
-                  Itinerario
-                </Link>
-              </li>
-              <li>
-                <Link className="text-white/90 hover:text-white hover:underline" to="/como-llegar">
-                  Cómo llegar
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* INFO (4) */}
-          <div className="md:col-span-5">
-            <h4 className="mb-3 text-lg font-semibold text-teal-50">Información</h4>
-
-            <p className="text-base text-white/90 leading-relaxed">
-              Los horarios, precios y disponibilidad pueden variar. Recomendamos verificar con cada
-              lugar antes de visitar.
-            </p>
-
-            <div className="mt-4 rounded-2xl bg-white/10 p-4 text-base text-white">
-              <div className="font-semibold">Tip rápido</div>
-              <p className="mt-1 text-slate-50 leading-relaxed">
-                Guardá favoritos en “Itinerario” y compartí el link para organizar el plan en grupo.
-              </p>
-            </div>
-          </div>
+    <footer className="mt-20 bg-river-900 text-river-100">
+      <div className="page-container grid gap-10 py-12 md:grid-cols-[1.4fr_1fr_1fr]">
+        <div>
+          <p className="font-display text-2xl text-white">Tigre</p>
+          <p className="mt-3 max-w-sm text-sm leading-relaxed">
+            Guía práctica e independiente para planificar una visita a Tigre. No es un sitio oficial del
+            Municipio ni de los lugares listados: horarios, precios y servicios pueden cambiar, así que
+            confirmalos antes de ir.
+          </p>
         </div>
 
-        {/* BOTTOM */}
-        <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-slate-200/40 pt-6 text-base text-white md:flex-row">
-          <span>© {new Date().getFullYear()} Tigre Turismo. Todos los derechos reservados.</span>
+        <nav aria-label="Pie de página">
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-river-100/70">Explorar</p>
+          <ul className="mt-3 space-y-2 text-[15px]">
+            <li><Link className="hover:text-white" to="/que-hacer">Qué hacer</Link></li>
+            <li><Link className="hover:text-white" to="/como-llegar">Cómo llegar</Link></li>
+            <li><Link className="hover:text-white" to="/itinerario">Mi itinerario</Link></li>
+            <li><Link className="hover:text-white" to="/creditos">Créditos de fotos</Link></li>
+          </ul>
+        </nav>
 
-          <span className="text-center md:text-right text-white/90">
-            Hecho con ❤ por{" "}
+        <div>
+          <p className="text-xs font-medium uppercase tracking-[0.14em] text-river-100/70">Compartir</p>
+          <button
+            type="button"
+            onClick={share}
+            className="mt-3 inline-flex h-10 items-center gap-2 rounded-full border border-river-100/30 px-4 text-sm text-white hover:bg-white/10"
+          >
+            <Icon name={copied ? "check" : "share"} />
+            {copied ? "Enlace copiado" : "Compartir esta página"}
+          </button>
+          <p className="sr-only" aria-live="polite">{copied ? "Enlace copiado al portapapeles" : ""}</p>
+        </div>
+      </div>
+
+      <div className="border-t border-white/10">
+        <div className="page-container flex flex-col gap-2 py-5 text-xs text-river-100/70 sm:flex-row sm:justify-between">
+          <p>© {year} Tigre Turismo · Proyecto independiente</p>
+          <p>
+            Diseño y desarrollo:{" "}
             <a
-              className="font-semibold underline decoration-white/30 hover:decoration-white"
+              className="underline-offset-2 hover:text-white hover:underline"
               href="https://www.linkedin.com/in/laura-moyano-h/"
               target="_blank"
-              rel="noreferrer noopener"
+              rel="noopener noreferrer"
             >
               Laura Moyano
             </a>
-            , para personas que quieren viajar mejor
-          </span>
+            {" · "}Mapas © OpenStreetMap
+          </p>
         </div>
       </div>
     </footer>

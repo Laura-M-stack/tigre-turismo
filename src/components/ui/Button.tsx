@@ -1,23 +1,40 @@
-import type { ButtonHTMLAttributes } from "react";
+import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from "react";
+import { Link, type LinkProps } from "react-router-dom";
 
-type Props = ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "primary" | "ghost";
-};
+import { buttonClasses, type ButtonStyleProps as StyleProps } from "./buttonStyles";
 
 export default function Button({
-  variant = "primary",
-  className = "",
+  variant,
+  size,
+  className,
+  type = "button",
   ...props
-}: Props) {
-  const base =
-    "inline-flex items-center justify-center rounded-xl px-4 py-2 text-lg font-semibold " +
-    "transition focus:outline-none focus:ring-2 focus:ring-slate-900/20 disabled:opacity-50 " +
-    "border border-transparent";
+}: ButtonHTMLAttributes<HTMLButtonElement> & StyleProps) {
+  return <button type={type} className={buttonClasses({ variant, size, className })} {...props} />;
+}
 
-  const styles =
-    variant === "primary"
-      ? "bg-teal-900 border-2 border-white/70 text-white hover:bg-teal-600 focus:ring-white-500/50"
-      : "bg-slate-100 border-2 text-slate-800 hover:bg-slate-200";
+/** Link interno con estilo de botón (evita anidar <button> dentro de <a>). */
+export function ButtonLink({ variant, size, className, ...props }: LinkProps & StyleProps) {
+  return <Link className={buttonClasses({ variant, size, className })} {...props} />;
+}
 
-  return <button className={`${base} ${styles} ${className}`} {...props} />;
+/** Enlace externo con estilo de botón; abre en pestaña nueva de forma segura. */
+export function ButtonAnchor({
+  variant,
+  size,
+  className,
+  children,
+  ...props
+}: AnchorHTMLAttributes<HTMLAnchorElement> & StyleProps) {
+  return (
+    <a
+      target="_blank"
+      rel="noopener noreferrer"
+      className={buttonClasses({ variant, size, className })}
+      {...props}
+    >
+      {children}
+      <span className="sr-only"> (se abre en otra pestaña)</span>
+    </a>
+  );
 }

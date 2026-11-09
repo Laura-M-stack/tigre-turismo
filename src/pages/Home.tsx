@@ -1,169 +1,177 @@
-import { useEffect, useMemo } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
-import AppImage from "../components/ui/AppImage";
-import Button from "../components/ui/Button";
-import Card from "../components/ui/Card";
+import PlaceCard from "../components/place/PlaceCard";
+import { ButtonLink } from "../components/ui/Button";
+import Icon from "../components/ui/Icon";
+import Photo from "../components/ui/Photo";
 import { places } from "../data/places";
+import { QUICK_PLANS } from "../lib/filterPlaces";
 import { setSEO } from "../lib/seo";
 
+const FEATURED = ["paseo-victorica", "puerto-de-frutos", "paseo-en-lancha-por-el-delta", "museo-de-arte-tigre"];
+
+const STEPS = [
+  {
+    title: "Elegí qué hacer",
+    text: "Filtrá por tiempo, presupuesto o con quién vas. Cada lugar tiene tips concretos y su ubicación.",
+  },
+  {
+    title: "Armá tu día",
+    text: "Agregá lugares a tu itinerario y ordenalos. Se guarda en este navegador, sin registrarte.",
+  },
+  {
+    title: "Llegá y movete",
+    text: "Tren, colectivo o auto, y un mapa con todo numerado para abrir indicaciones en Maps.",
+  },
+];
+
 export default function Home() {
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
+
   useEffect(() => {
     setSEO(
-      "Tigre Turismo — Planificá tu visita",
-      "Ideas para recorrer Tigre: imperdibles, actividades, mapas y un itinerario guardado.",
+      "Tigre Turismo — Guía práctica para planificar tu día en Tigre",
+      "Qué hacer en Tigre, cómo llegar y un itinerario que se guarda en tu navegador. Guía independiente y no oficial.",
     );
   }, []);
 
-  const featured = useMemo(() => {
-    const ids = new Set([
-      "paseo-victorica",
-      "museo-de-arte-tigre",
-      "paseo-en-lancha-por-el-delta",
-      "puerto-de-frutos",
-    ]);
-    return places.filter((p) => ids.has(p.slug)).slice(0, 4);
-  }, []);
+  const featured = useMemo(
+    () => FEATURED.map((s) => places.find((p) => p.slug === s)).filter((p) => p !== undefined),
+    [],
+  );
+
+  const onSearch = (e: FormEvent) => {
+    e.preventDefault();
+    const term = q.trim();
+    navigate(term ? `/que-hacer?q=${encodeURIComponent(term)}` : "/que-hacer");
+  };
 
   return (
-    <div className="pb-14">
-      {/* HERO full-bleed */}
-      <section id="top" className="full-bleed relative overflow-hidden">
-        <AppImage
-          src="images/tigre-hero.jpg"
-          alt="Tigre, Buenos Aires"
-          className="h-[62vh] w-full object-cover md:h-[72vh]"
-          loading="eager"
-          fetchPriority="high"
-        />
-        <div className="absolute inset-0 bg-linear-to-t from-black/65 via-black/35 to-black/10" />
+    <>
+      {/* HERO dividido: texto + búsqueda a la izquierda, foto con crédito a la derecha */}
+      <section className="page-container grid items-center gap-10 pb-14 pt-10 md:pt-14 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+        <div>
+          <p className="text-sm font-medium uppercase tracking-[0.14em] text-brick-600">
+            Tigre · Delta del Paraná
+          </p>
+          <h1 className="mt-4 text-[2.6rem] leading-[1.05] sm:text-6xl">
+            Un día en Tigre,
+            <br />
+            <em className="font-medium italic text-river-800">sin improvisar.</em>
+          </h1>
+          <p className="mt-5 max-w-lg text-lg text-ink-soft">
+            Qué ver, cuánto tiempo lleva y cuánto cuesta, en un solo lugar. Elegí, guardá y salí con el plan
+            armado.
+          </p>
 
-        {/* Centro vertical + horizontal */}
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="page-container w-full">
-            <div className="mx-auto max-w-3xl text-center text-white">
-              <p className="mx-auto mb-4 inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-md font-medium backdrop-blur">
-                🌿 Delta • 🛶 Paseos • 🏛️ Museos
-              </p>
-
-              <h1 className="text-4xl font-semibold tracking-tight md:text-6xl">
-                Tigre, Buenos Aires
-              </h1>
-
-              <p className="mx-auto mt-4 max-w-2xl text-base text-white/90 md:text-xl">
-                Armá un plan en minutos: explorá lugares, guardá favoritos y creá tu itinerario.
-              </p>
-
-              <div className="mt-7 flex flex-wrap justify-center gap-3">
-                <Link to="/que-hacer">
-                  <Button>Explorar qué hacer</Button>
-                </Link>
-                <Link to="/itinerario">
-                  <Button variant="ghost">Ver mi itinerario</Button>
-                </Link>
-                <Link to="/como-llegar">
-                  <Button variant="ghost">Cómo llegar</Button>
-                </Link>
-              </div>
+          <form onSubmit={onSearch} role="search" className="mt-8 flex max-w-lg gap-2">
+            <label htmlFor="home-q" className="sr-only">
+              Buscar lugares y actividades
+            </label>
+            <div className="relative flex-1">
+              <Icon name="search" className="pointer-events-none absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-ink-soft" />
+              <input
+                id="home-q"
+                type="search"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                placeholder="Lancha, museo, Puerto de Frutos…"
+                className="h-13 w-full rounded-full border border-ink/15 bg-white pl-11 pr-4 text-base shadow-sm focus:border-river-700 focus:outline-none focus:ring-2 focus:ring-river-700/20"
+              />
             </div>
+            <button
+              type="submit"
+              className="h-13 shrink-0 rounded-full bg-river-800 px-6 font-medium text-white hover:bg-river-900"
+            >
+              Buscar
+            </button>
+          </form>
+
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            <span className="text-sm text-ink-soft">Planes rápidos:</span>
+            {QUICK_PLANS.slice(0, 4).map((p) => (
+              <Link
+                key={p.id}
+                to={`/que-hacer?plan=${p.id}`}
+                className="rounded-full border border-ink/15 bg-white px-3.5 py-1.5 text-sm text-ink hover:border-river-700 hover:text-river-800"
+              >
+                {p.label}
+              </Link>
+            ))}
           </div>
         </div>
+
+        <figure className="relative">
+          <Photo
+            photoKey="hero-home"
+            alt="Tigre, Buenos Aires"
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="aspect-[4/3] rounded-[28px] lg:aspect-[4/5]"
+            priority
+          />
+          <figcaption className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3 rounded-2xl bg-white/90 px-4 py-3 text-sm shadow-sm backdrop-blur sm:right-auto">
+            <span>
+              <span className="block font-medium text-ink">A 1 hora de Buenos Aires</span>
+              <span className="text-ink-soft">Tren, colectivo o auto · Foto: Laura Moyano</span>
+            </span>
+          </figcaption>
+        </figure>
       </section>
 
-      {/* CONTENIDO */}
-      <div className="page-container">
-        {/* AVISO VERANO (Mitre)
-        <section className="mt-8">
-          <div className="rounded-3xl border border-amber-200 bg-amber-50 p-6">
-            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-              <div>
-                <h2 className="text-lg font-semibold text-slate-900">
-                  🚧 Aviso: no te frenes por el tren
-                </h2>
-                <p className="mt-1 text-lg text-slate-700">
-                  Si el <b>Tren Mitre (Retiro–Tigre)</b> no está funcionando, o funciona con un recorrido reducido,igual podés venir:
-                  <b> Tren de la Costa</b>, <b>colectivo</b> o <b>auto</b>.
-                </p>
-                <p className="mt-1 text-md text-slate-600">
-                  Te dejamos opciones claras y un mapa rápido para planificar.
-                </p>
-              </div>
-
-              <div className="flex flex-wrap gap-2">
-                <Link to="/como-llegar">
-                  <Button>Ver opciones para llegar</Button>
-                </Link>
-                <Link to="/que-hacer">
-                  <Button variant="ghost">Ver lugares</Button>
-                </Link>
-              </div>
-            </div>
-          </div>
-        </section> */}
-
-        {/* IMPERDIBLES */}
-        <div id="imperdibles" className="mt-10 flex items-end justify-between gap-4">
+      {/* IMPERDIBLES */}
+      <section aria-labelledby="imperdibles" className="page-container">
+        <div className="flex items-end justify-between gap-4 border-t border-ink/10 pt-10">
           <div>
-            <h2 className="text-xl font-semibold">Imperdibles para empezar</h2>
-            <p className="mt-1 text-lg text-slate-600">
-              Cuatro ideas seguras si es tu primera vez (o si tenés poco tiempo).
-            </p>
+            <h2 id="imperdibles" className="text-3xl sm:text-4xl">
+              Para empezar
+            </h2>
+            <p className="mt-2 text-ink-soft">Cuatro clásicos si es tu primera vez o tenés poco tiempo.</p>
           </div>
-          <Link className="text-lg font-medium text-slate-900 underline" to="/que-hacer">
-            Ver todos
+          <Link to="/que-hacer" className="hidden shrink-0 items-center gap-1.5 font-medium text-river-800 hover:text-river-900 sm:inline-flex">
+            Ver los {places.length} lugares <Icon name="arrowRight" />
           </Link>
         </div>
 
-        <section className="mt-5 grid gap-4 sm:grid-cols-2">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {featured.map((p) => (
-            <Link key={p.slug} to={`/lugares/${p.slug}`} className="block">
-              <Card className="group relative overflow-hidden p-0">
-                <AppImage
-                  src={p.coverImage}
-                  alt={p.name}
-                  className="h-65 w-full object-cover transition duration-500 group-hover:scale-[1.02]"
-                  loading="eager"
-                  fetchPriority="high"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/25 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <p className="text-md font-medium text-white/85">
-                    {p.category} • {p.duration} • {p.budget}
-                  </p>
-                  <h3 className="mt-1 text-lg font-semibold text-white">{p.name}</h3>
-                  <p className="mt-1 line-clamp-2 text-md text-white/90">
-                    {p.shortDescription}
-                  </p>
-                </div>
-              </Card>
-            </Link>
+            <PlaceCard key={p.slug} place={p} />
           ))}
-        </section>
+        </div>
 
-        {/* CÓMO FUNCIONA */}
-        <section id="como-funciona" className="mt-10 grid gap-4 md:grid-cols-3">
-          <Card className="p-6">
-            <h3 className="text-base font-semibold">🧭 Elegí tu plan</h3>
-            <p className="mt-2 text-lg text-slate-600">
-              Familia, pareja, lluvia, naturaleza o aventura: filtrá y decidí rápido.
-            </p>
-          </Card>
+        <ButtonLink to="/que-hacer" variant="secondary" className="mt-6 w-full sm:hidden">
+          Ver los {places.length} lugares
+        </ButtonLink>
+      </section>
 
-          <Card className="p-6">
-            <h3 className="text-base font-semibold">⭐ Guardá favoritos</h3>
-            <p className="mt-2 text-lg text-slate-600">
-              Armá tu lista y ordenala: tu itinerario queda guardado en el navegador.
-            </p>
-          </Card>
-
-          <Card className="p-6">
-            <h3 className="text-base font-semibold">🗺️ Movete fácil</h3>
-            <p className="mt-2 text-lg text-slate-600">
-              Abrí indicaciones en Maps y ubicá accesos vs. zonas aproximadas.
-            </p>
-          </Card>
-        </section>
-      </div>
-    </div>
+      {/* CÓMO FUNCIONA */}
+      <section aria-labelledby="como-funciona" className="page-container mt-20">
+        <div className="rounded-[28px] bg-river-800 px-6 py-12 text-white sm:px-10">
+          <h2 id="como-funciona" className="text-3xl text-white sm:text-4xl">
+            Cómo usar la guía
+          </h2>
+          <ol className="mt-8 grid gap-8 md:grid-cols-3">
+            {STEPS.map((s, i) => (
+              <li key={s.title}>
+                <span className="font-display text-5xl text-brick-500" aria-hidden="true">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <h3 className="mt-2 text-xl text-white">{s.title}</h3>
+                <p className="mt-2 text-river-100">{s.text}</p>
+              </li>
+            ))}
+          </ol>
+          <div className="mt-10 flex flex-wrap gap-3">
+            <ButtonLink to="/que-hacer" variant="accent">
+              Empezar a elegir
+            </ButtonLink>
+            <ButtonLink to="/como-llegar" className="border border-white/30 bg-transparent hover:bg-white/10">
+              Cómo llegar
+            </ButtonLink>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
