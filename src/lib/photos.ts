@@ -1,3 +1,4 @@
+import photoSizes from "../data/photo-sizes.json";
 import catalog from "../data/photos.json";
 
 type CatalogEntry = {
@@ -24,15 +25,19 @@ export type Photo = {
 
 const PHOTOS = catalog as Record<string, CatalogEntry>;
 
-/** Anchos estándar que Wikimedia cachea en su CDN. */
-export const COMMONS_WIDTHS = [500, 960, 1280, 1920] as const;
+/**
+ * Anchos generados de cada foto de Commons. Las fotos están descargadas en public/images/commons
+ * (WebP), así el sitio no depende de que Wikimedia responda para mostrarlas.
+ */
+const LOCAL_SIZES = photoSizes as Record<string, number[]>;
 
 function commonsSlug(file: string) {
   return encodeURIComponent(file.replace(/ /g, "_"));
 }
 
-export function commonsImageUrl(file: string, width: number) {
-  return `https://commons.wikimedia.org/wiki/Special:FilePath/${commonsSlug(file)}?width=${width}`;
+/** Ruta local de una foto de Commons en un ancho dado. */
+export function localCommonsUrl(key: string, width: number) {
+  return `${baseUrl()}images/commons/${key}-${width}.webp`;
 }
 
 export function commonsPageUrl(file: string) {
@@ -61,11 +66,13 @@ export function getPhoto(key: string | undefined | null): Photo | null {
   }
 
   if (!entry.file) return null;
+  const widths = LOCAL_SIZES[key];
+  if (!widths?.length) return null;
 
   return {
     key,
-    src: commonsImageUrl(entry.file, 1280),
-    srcSet: COMMONS_WIDTHS.map((w) => `${commonsImageUrl(entry.file!, w)} ${w}w`).join(", "),
+    src: localCommonsUrl(key, widths[Math.min(1, widths.length - 1)]),
+    srcSet: widths.map((w) => `${localCommonsUrl(key, w)} ${w}w`).join(", "),
     sourceUrl: commonsPageUrl(entry.file),
     ...credit,
   };
